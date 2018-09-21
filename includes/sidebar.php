@@ -37,8 +37,9 @@
                     $select_categories_sidebar_query = mysqli_query($connection, $query);
 
                     while($row = mysqli_fetch_assoc($select_categories_sidebar_query)) {
+                        $cat_id = $row['Id'];
                         $cat_title = $row['Title'];
-                        echo "<li ><a href='#'>{$cat_title}</a></li>";
+                        echo "<li ><a href='category.php?category=$cat_id'>{$cat_title}</a></li>";
                     }
 
                     ?>
