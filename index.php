@@ -23,7 +23,7 @@
                         $post_author = $row['Author'];
                         $post_date = $row['Date'];
                         $post_image = $row['Image'];
-                        $post_content = $row['Content'];
+                        $post_content = substr($row['Content'], 0, 50);
 
                 ?>
 
