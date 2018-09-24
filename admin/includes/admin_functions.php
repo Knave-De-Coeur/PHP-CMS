@@ -176,3 +176,32 @@ function GetAllCommentsAndOutputRow() {
         echo "<td><a href='comments.php?delete=$comment_Id'>Delete</a></td>";
     }
 }
+
+// users
+
+function GetAllUsersAndOutputRow() {
+    global $connection;
+    $query = "SELECT * FROM users ORDER BY Id DESC; ";
+    $queryAllUsers = mysqli_query($connection, $query);
+
+    while($row = mysqli_fetch_assoc($queryAllUsers)){
+        $user_Id = $row['Id'];
+        $user_username = $row['username'];
+        $user_firstname = $row['firstname'];
+        $user_lastname = $row['lastname'];
+        $user_email = $row['email'];
+        $user_image = $row['image'];
+        $user_role = $row['role'];
+
+        echo "<tr>";
+        echo "<td>$user_Id</td>";
+        echo "<td>$user_username</td>";
+        echo "<td>$user_firstname</td>";
+        echo "<td>$user_lastname</td>";
+        echo "<td>$user_email</td>";
+        echo "<td>$user_role</td>";
+        echo "<td><img style='width: 100px;' src='../images/$user_image ' /></td>";
+        echo "<td><a href='users.php?source=edit_user&u_id=$user_Id'>Edit</a></td>";
+        echo "<td><a href='users.php?delete=$user_Id'>Delete</a></td>";
+    }
+}
