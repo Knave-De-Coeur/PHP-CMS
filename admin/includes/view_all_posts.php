@@ -13,6 +13,8 @@ if(isset($_GET['delete'])) {
     $query_delete_post = mysqli_query($connection, $query);
 
     confirmQuery($query_delete_post);
+
+    header("Location: posts.php");
 }
 
 ?>
@@ -29,7 +31,8 @@ if(isset($_GET['delete'])) {
         <th>Tags</th>
         <th>Comments</th>
         <th>Date</th>
-        <th></th>
+        <th>Delete</th>
+        <th>Edit</th>
     </tr>
     </thead>
     <tbody>

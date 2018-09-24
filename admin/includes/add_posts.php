@@ -7,10 +7,10 @@
  */
 if(isset($_POST['create_post'])) {
 //    echo "Working";
-    $post_title        = $_POST['title'];
+    $post_title        = addslashes($_POST['title']);
     $post_category_id  = $_POST['post_category_id'];
 //    $post_user         = $_POST['user'];
-    $post_author       = $_POST['author'];
+    $post_author       = addslashes($_POST['author']);
     $post_status       = $_POST['post_status'];
 
     $post_image        = $_FILES['image']['name'];
@@ -18,14 +18,14 @@ if(isset($_POST['create_post'])) {
 
 
     $post_tags         = $_POST['post_tags'];
-    $post_content      = $_POST['post_content'];
+    $post_content      = addslashes($_POST['post_content']);
     $post_date         = date('d-m-y');
 //    $post_comment_count = 4;
 
     move_uploaded_file($post_image_temp, "../images/$post_image");
 
-    $query = "INSERT INTO posts (Id, Post_Category_Id, Title, Author, Date, Image, Content, Tags, Status) 
-              VALUES (NULL, {$post_category_id}, '{$post_title}', '{$post_author}', now(), '{$post_image}', '{$post_content}', '{$post_tags}', '{$post_status}'); ";
+    $query = "INSERT INTO posts (Post_Category_Id, Title, Author, Date, Image, Content, Tags, Status) 
+              VALUES ({$post_category_id}, '{$post_title}', '{$post_author}', now(), '{$post_image}', '{$post_content}', '{$post_tags}', '{$post_status}'); ";
 
 
     $create_post_query = mysqli_query($connection, $query);
@@ -82,13 +82,12 @@ if(isset($_POST['create_post'])) {
         <input type="text" class="form-control" name="post_status">
     </div>
 
-<!--    <div class="form-group">-->
-<!--        <select name="post_status" id="">-->
-<!--            <option value="draft">Post Status</option>-->
-<!--            <option value="published">Published</option>-->
-<!--            <option value="draft">Draft</option>-->
-<!--        </select>-->
-<!--    </div>-->
+    <div class="form-group">
+        <select name="post_status" id="">
+            <option value="published">Published</option>
+            <option value="draft">Draft</option>
+        </select>
+    </div>
 
 
 

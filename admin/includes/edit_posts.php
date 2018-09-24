@@ -16,12 +16,12 @@ if(isset($_GET['p_id'])) {
 
     while($row = mysqli_fetch_assoc($queryPostById)){
         $post_Id = $row['Id'];
-        $post_title = $row['Title'];
-        $post_author = $row['Author'];
+        $post_title = stripslashes($row['Title']);
+        $post_author = stripslashes($row['Author']);
         $post_category_id = $row['Post_Category_Id'];
         $post_date = $row['Date'];
         $post_image = $row['Image'];
-        $post_content = $row['Content'];
+        $post_content = stripslashes($row['Content']);
         $post_tags = $row['Tags'];
         $post_comment = $row['Comment_Count'];
         $post_status = $row['Status'];
@@ -29,9 +29,9 @@ if(isset($_GET['p_id'])) {
 }
 
 if(isset($_POST['update_post'])) {
-    $post_title         = $_POST['title'];
+    $post_title         = addslashes($_POST['title']);
     $post_category_id   = $_POST['post_category_id'];
-    $post_author        = $_POST['author'];
+    $post_author        = addslashes($_POST['author']);
     $post_status        = $_POST['post_status'];
 
     $post_image         = $_FILES['image']['name'];
@@ -39,9 +39,8 @@ if(isset($_POST['update_post'])) {
 
 
     $post_tags          = $_POST['post_tags'];
-    $post_content       = $_POST['post_content'];
+    $post_content       = addslashes($_POST['post_content']);
     $post_date          = date('d-m-y');
-    $post_comment_count = 4;
 
     if(empty($post_image))
     {
@@ -58,9 +57,10 @@ if(isset($_POST['update_post'])) {
 
     move_uploaded_file($post_image_temp, "../images/$post_image");
 
-    $query = "UPDATE posts SET Post_Category_Id = $post_category_id, Title = '$post_title', Date = now(), Image = '$post_image', 
-                               Author='$post_author', Content = '$post_content', Tags = '$post_tags', Status='$post_status' 
-              WHERE id = $post_id; ";
+    $query = "UPDATE posts SET 
+              Title='{$post_title}', Post_Category_Id=$post_category_id,  Date=NOW(), Image='$post_image', Author='{$post_author}', Content='{$post_content}', Tags='{$post_tags}', Status='$post_status' 
+              WHERE Id = $post_id";
+
 
 
     $update_post_query = mysqli_query($connection, $query);

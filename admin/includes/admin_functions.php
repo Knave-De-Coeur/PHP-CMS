@@ -14,12 +14,11 @@ function InsertCategory() {
 
     global $connection;
     if(isset($_POST['submit'])) {
-        $catTitle = $_POST['cat_title'];
+        $catTitle = addslashes($_POST['cat_title']);
         if($catTitle == "" || empty($catTitle)) {
             echo "This field should not be empty";
         } else {
-            $query = "INSERT INTO categories(Title) ";
-            $query .= "VALUES ('{$catTitle}') ";
+            $query = "INSERT INTO categories(Title) VALUES ('$catTitle') ";
 
 
             $createCategoryQuery = mysqli_query($connection, $query);
@@ -39,7 +38,7 @@ function FindAllCategories() {
 
     while($row = mysqli_fetch_assoc($select_categories_sidebar_query)) {
     $cat_id = $row['Id'];
-    $cat_title = $row['Title'];
+    $cat_title = stripslashes($row['Title']);
 
     echo "<tr>
         <td>$cat_id</td>
@@ -59,10 +58,10 @@ function FindCategoryByPostId($post_Id)
     $cat_Title = 0;
     while($row = mysqli_fetch_assoc($select_categories_id))
     {
-        $cat_Title = $row['Title'];
+        $cat_Title = stripslashes($row['Title']);
     }
 
-    return$cat_Title;
+    return $cat_Title;
 }
 
 function DeleteCategory() {
@@ -109,8 +108,8 @@ function GetAllPostsAndOutputRow() {
 
     while($row = mysqli_fetch_assoc($queryAllPosts)){
         $post_Id = $row['Id'];
-        $post_title = $row['Title'];
-        $post_author = $row['Author'];
+        $post_title = stripslashes($row['Title']);
+        $post_author = stripslashes($row['Author']);
         $post_categoryName = FindCategoryByPostId($row['Post_Category_Id']);
         $post_date = $row['Date'];
         $post_image = $row['Image'];
@@ -128,7 +127,8 @@ function GetAllPostsAndOutputRow() {
         echo "<td>$post_tags</td>";
         echo "<td>$post_comment</td>";
         echo "<td>$post_date</td>";
-        echo "<td><a href='posts.php?delete=$post_Id'>Delete</a><br /><a href='posts.php?source=edit_post&p_id=$post_Id'>Edit</a></td>";
+        echo "<td><a href='posts.php?delete=$post_Id'>Delete</a><br /></td>";
+        echo "<td><a href='posts.php?source=edit_post&p_id=$post_Id'>Edit</a></td>";
         echo "</tr>";
     }
 }
@@ -142,7 +142,7 @@ function FindPostByCommentPostId($comment_post_Id)
     $post_Title = 0;
     while($row = mysqli_fetch_assoc($select_post_id))
     {
-        $post_Title = $row['Title'];
+        $post_Title = stripslashes($row['Title']);
     }
 
     return $post_Title;
@@ -157,7 +157,7 @@ function GetAllCommentsAndOutputRow() {
         $comment_Id = $row['Id'];
         $comment_post_Id = $row['Post_Id'];
         $comment_post_Title = FindPostByCommentPostId($row['Post_Id']);
-        $comment_content = $row['Content'];
+        $comment_content = stripslashes($row['Content']);
         $comment_author = $row['Author'];
         $comment_date = $row['Date'];
         $comment_status = $row['Status'];

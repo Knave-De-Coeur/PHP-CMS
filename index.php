@@ -14,16 +14,22 @@
             <div class="col-md-8">
 
                 <?php
-                    $query = "SELECT * FROM posts";
-                    $select_all_categories_query = mysqli_query($connection, $query);
+                    $query = "SELECT * FROM posts WHERE Status = 'published' ORDER BY Id DESC;";
+                    $select_al_published_categories_query = mysqli_query($connection, $query);
 
-                    while($row = mysqli_fetch_assoc($select_all_categories_query)) {
-                        $post_id = $row['Id'];
-                        $post_title = $row['Title'];
-                        $post_author = $row['Author'];
-                        $post_date = $row['Date'];
-                        $post_image = $row['Image'];
-                        $post_content = substr($row['Content'], 0, 50);
+                    if(mysqli_num_rows($select_al_published_categories_query) > 0) {
+
+                        while($row = mysqli_fetch_assoc($select_al_published_categories_query)) {
+                            $post_id = $row['Id'];
+                            $post_title = $row['Title'];
+                            $post_author = $row['Author'];
+                            $post_date = $row['Date'];
+                            $post_image = $row['Image'];
+                            $post_content = substr($row['Content'], 0, 50);
+                            $post_status = $row['Status'];
+
+
+
 
                 ?>
 
@@ -51,7 +57,10 @@
                 <hr>
 
                 <?php
-                    }
+                            }
+                        } else {
+                            echo "<h1>No Posts to show</h1>";
+                        }
                 ?>
 
 

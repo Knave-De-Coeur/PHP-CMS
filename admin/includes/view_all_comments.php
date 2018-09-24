@@ -44,7 +44,6 @@ if(isset($_GET['edit'])) {
         <th>Approve</th>
         <th>Un-approve</th>
         <th>Delete</th>
-        <th></th>
     </tr>
     </thead>
     <tbody>
