@@ -6,12 +6,7 @@
  * Time: 18:35
  */
 
-function confirmQuery($queryResult) {
-    global $connection;
-    if(!$queryResult) {
-        die("Query failed: " . mysqli_error($connection));
-    }
-}
+
 
 
 // category functions
@@ -135,5 +130,49 @@ function GetAllPostsAndOutputRow() {
         echo "<td>$post_date</td>";
         echo "<td><a href='posts.php?delete=$post_Id'>Delete</a><br /><a href='posts.php?source=edit_post&p_id=$post_Id'>Edit</a></td>";
         echo "</tr>";
+    }
+}
+
+function FindPostByCommentPostId($comment_post_Id)
+{
+    global $connection;
+    $query = "SELECT * FROM posts WHERE Id = {$comment_post_Id}; ";
+    $select_post_id = mysqli_query($connection, $query);
+
+    $post_Title = 0;
+    while($row = mysqli_fetch_assoc($select_post_id))
+    {
+        $post_Title = $row['Title'];
+    }
+
+    return $post_Title;
+}
+
+function GetAllCommentsAndOutputRow() {
+    global $connection;
+    $query = "SELECT * FROM comments ORDER BY Id DESC; ";
+    $queryAllComments = mysqli_query($connection, $query);
+
+    while($row = mysqli_fetch_assoc($queryAllComments)){
+        $comment_Id = $row['Id'];
+        $comment_post_Id = $row['Post_Id'];
+        $comment_post_Title = FindPostByCommentPostId($row['Post_Id']);
+        $comment_content = $row['Content'];
+        $comment_author = $row['Author'];
+        $comment_date = $row['Date'];
+        $comment_status = $row['Status'];
+        $comment_email = $row['Email'];
+
+        echo "<tr>";
+        echo "<td>$comment_Id</td>";
+        echo "<td>$comment_author</td>";
+        echo "<td>$comment_content</td>";
+        echo "<td>$comment_email</td>";
+        echo "<td>$comment_status</td>";
+        echo "<td><a href='posts.php?source=edit_post&p_id=$comment_post_Id'>$comment_post_Title</a></td>";
+        echo "<td>$comment_date</td>";
+        echo "<td><a href='comments.php?edit=$comment_Id&status=approved'>Approve</a></td>";
+        echo "<td><a href='comments.php?edit=$comment_Id&status=unapproved'>Unapprove</a></td>";
+        echo "<td><a href='comments.php?delete=$comment_Id'>Delete</a></td>";
     }
 }

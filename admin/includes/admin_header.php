@@ -1,5 +1,6 @@
 <?php ob_start(); ?>
 <?php include "../includes/db_connection.php"; ?>
+<?php include "../includes/functions.php"; ?>
 <?php include "includes/admin_functions.php"; ?>
 
 <!DOCTYPE html>

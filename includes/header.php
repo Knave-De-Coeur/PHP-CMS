@@ -5,6 +5,7 @@
  * Date: 06/09/2018
  * Time: 14:58
  */
+include "functions.php"
 ?>
 
 <!DOCTYPE html>
