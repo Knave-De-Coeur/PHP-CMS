@@ -10,11 +10,32 @@ if(isset($_GET['delete'])) {
     $user_id = $_GET['delete'];
     $query = "DELETE FROM users WHERE Id = " . $user_id;
 
-    $quer_delete_user_by_id = mysqli_query($connection, $query);
+    $query_delete_user_by_id = mysqli_query($connection, $query);
 
-    confirmQuery($quer_delete_user_by_id);
+    confirmQuery($query_delete_user_by_id);
 
     header("Location: users.php");
+}
+
+if(isset($_GET['change_to_admin']))
+{
+    $user_id = $_GET['change_to_admin'];
+
+    $query = "UPDATE users SET role = 'admin' WHERE Id = $user_id; ";
+
+    $query_upadate_user_to_admin = mysqli_query($connection, $query);
+
+    confirmQuery($query_upadate_user_to_admin);
+}
+else if (isset($_GET['change_to_sub']))
+{
+    $user_id = $_GET['change_to_sub'];
+
+    $query = "UPDATE users SET role = 'subscriber' WHERE Id = $user_id; ";
+
+    $query_upadate_user_to_subscriber = mysqli_query($connection, $query);
+
+    confirmQuery($query_upadate_user_to_subscriber);
 }
 
 ?>
@@ -29,6 +50,8 @@ if(isset($_GET['delete'])) {
         <th>Email</th>
         <th>Role</th>
         <th>Image</th>
+        <th>Admin</th>
+        <th>Subscriber</th>
         <th>Edit</th>
         <th>Delete</th>
     </tr>

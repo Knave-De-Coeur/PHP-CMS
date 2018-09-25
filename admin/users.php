@@ -28,10 +28,10 @@
 
                         switch($source) {
                             case 'add_user':
-                                include "includes/add_user.php";
+                                include "includes/add_users.php";
                                 break;
                             case 'edit_user':
-                                include "includes/edit_user.php";
+                                include "includes/edit_users.php";
                                 break;
                             case '200':
                                 echo "NICE 200";

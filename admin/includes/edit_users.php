@@ -5,17 +5,16 @@
  * Date: 11/09/2018
  * Time: 12:57
  */
-if(isset($_GET['p_id'])) {
-    $post_id = $_GET['p_id'];
+if(isset($_GET['u_id'])) {
+    $user_id = $_GET['u_id'];
 
-    $query = "SELECT * FROM posts WHERE Id =  $post_id; ";
+    $query = "SELECT * FROM posts WHERE Id =  $user_id; ";
 
-    $queryPostById = mysqli_query($connection, $query);
+    $queryUserById = mysqli_query($connection, $query);
 
-    confirmQuery($queryPostById);
+    confirmQuery($queryUserById);
 
-    while($row = mysqli_fetch_assoc($queryPostById)){
-        $post_Id = $row['Id'];
+    while($row = mysqli_fetch_assoc($queryUserById)){
         $post_title = stripslashes($row['Title']);
         $post_author = stripslashes($row['Author']);
         $post_category_id = $row['Post_Category_Id'];
@@ -44,7 +43,7 @@ if(isset($_POST['update_post'])) {
 
     if(empty($post_image))
     {
-        $query = "SELECT * FROM posts WHERE Id = $post_id; ";
+        $query = "SELECT * FROM posts WHERE Id = $user_id; ";
         $select_image = mysqli_query($connection, $query);
 
         confirmQuery($select_image);
@@ -59,7 +58,7 @@ if(isset($_POST['update_post'])) {
 
     $query = "UPDATE posts SET 
               Title='{$post_title}', Post_Category_Id=$post_category_id,  Date=NOW(), Image='$post_image', Author='{$post_author}', Content='{$post_content}', Tags='{$post_tags}', Status='$post_status' 
-              WHERE Id = $post_id";
+              WHERE Id = $user_id";
 
 
 
@@ -79,30 +78,23 @@ if(isset($_POST['update_post'])) {
     </div>
 
     <div class="form-group">
-        <?php
+        <label for="user_role">Role</label>
+        <select name="user_role" id="">
+            <?php
 
-        $query = "SELECT * FROM categories;";
-        $querySelectAllCategories = mysqli_query($connection, $query);
-        confirmQuery($querySelectAllCategories);
-        ?>
+            $query = "SELECT * FROM users WHERE Id = $user_id; ";
+            $select_users = mysqli_query($connection, $query);
 
-        <select name="post_category_id" id="">
+            confirmQuery($select_users);
 
-        <?php
+            while($row = mysqli_fetch_assoc($select_users)) {
+//                $user_id = $row['Id'];
+                $user_role = $row['role'];
 
-
-        while($row = mysqli_fetch_assoc($querySelectAllCategories)) {
-            $category_id = $row['Id'];
-            $category_title = $row['Title'];
-            if($category_id == $post_category_id) {
-                echo "<option selected='selected' value='$category_id'>$category_title</option>";
+                echo "<option value='$user_id'>$user_role</option>";
             }
-            else{
-                echo "<option value='$category_id'>$category_title</option>";
-            }
-        }
-        ?>
 
+            ?>
         </select>
     </div>
 

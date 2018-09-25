@@ -201,6 +201,8 @@ function GetAllUsersAndOutputRow() {
         echo "<td>$user_email</td>";
         echo "<td>$user_role</td>";
         echo "<td><img style='width: 100px;' src='../images/$user_image ' /></td>";
+        echo "<td><a href='users.php?change_to_admin=$user_Id'>Admin</a></td>";
+        echo "<td><a href='users.php?change_to_sub=$user_Id'>Subscriber</a></td>";
         echo "<td><a href='users.php?source=edit_user&u_id=$user_Id'>Edit</a></td>";
         echo "<td><a href='users.php?delete=$user_Id'>Delete</a></td>";
     }
