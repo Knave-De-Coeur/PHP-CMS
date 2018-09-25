@@ -44,7 +44,6 @@ if(isset($_POST['update_user']))
                                 email='$user_email', role='$user_role',image='$user_image'
               WHERE Id = $user_id; ";
 
-
     $update_user_query = mysqli_query($connection, $query);
 
     confirmQuery($update_user_query);
