@@ -1,5 +1,6 @@
-<?php include "db_connection.php";?>
-<?php include "functions.php";?>
+<?php include "db_connection.php"; ?>
+<?php session_start(); ?>
+<?php include "functions.php"; ?>
 
 <?php
 
@@ -22,9 +23,24 @@ if(isset($_POST['login'])) {
     } else {
 
         while($row = mysqli_fetch_assoc($query_user_by_username)) {
-            $db_id = $row['Id'];
-            echo $db_id;
+            $db_user_id = $row['Id'];
+            $db_user_username = $row['username'];
+            $db_user_password = $row['password'];
+            $db_user_firstname = $row['firstname'];
+            $db_user_lastname = $row['lastname'];
+            $db_user_role = $row['role'];
+
         }
 
+        if($username === $db_user_username && $password === $db_user_password) {
+            $_SESSION['username'] = $db_user_username;
+            $_SESSION['firstname'] = $db_user_firstname;
+            $_SESSION['lastname'] = $db_user_lastname;
+            $_SESSION['role'] = $db_user_role;
+
+            header("Location: ../admin/index.php");
+        } else {
+            header("Location: ../index.php");
+        }
     }
 }
