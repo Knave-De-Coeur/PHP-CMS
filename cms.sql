@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 21, 2018 at 03:37 PM
+-- Generation Time: Sep 27, 2018 at 03:35 PM
 -- Server version: 10.1.34-MariaDB
 -- PHP Version: 7.2.8
 
@@ -44,7 +44,36 @@ INSERT INTO `categories` (`Id`, `Title`) VALUES
 (4, 'Java'),
 (50, 'Python'),
 (52, 'CSS'),
-(56, 'jQuery');
+(56, 'jQuery'),
+(57, 'Al\'s Category');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `comments`
+--
+
+CREATE TABLE `comments` (
+  `Id` int(3) NOT NULL,
+  `Post_Id` int(3) NOT NULL,
+  `Author` varchar(255) NOT NULL,
+  `Email` varchar(255) NOT NULL,
+  `Content` text NOT NULL,
+  `Date` date NOT NULL,
+  `Status` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `comments`
+--
+
+INSERT INTO `comments` (`Id`, `Post_Id`, `Author`, `Email`, `Content`, `Date`, `Status`) VALUES
+(1, 1, 'Alex Mifsud', 'alexm.1496@gmail.com', 'This is just an example', '2018-09-24', 'approved'),
+(3, 1, 'Sarah', 'sarah@gmail.com', 'I simply love this cms!', '2018-09-24', 'approved'),
+(4, 4, 'Test', 'test@test.com', 'sgbdjhkgbljkdbngdlkj', '2018-09-24', 'approved'),
+(5, 1, 'Nathan', 'nateDrake69@gmail.com', 'Enter new comment here.', '2018-09-24', 'approved'),
+(6, 1, 'Aidrian', 'adz@gmial.com', 'This should be comment number 5 ', '2018-09-24', 'unapproved'),
+(7, 4, 'Aidrian', 'adz@gmial.com', 'This should be comment 5', '2018-09-24', 'unapproved');
 
 -- --------------------------------------------------------
 
@@ -70,10 +99,35 @@ CREATE TABLE `posts` (
 --
 
 INSERT INTO `posts` (`Id`, `Post_Category_Id`, `Title`, `Author`, `Date`, `Image`, `Content`, `Tags`, `Comment_Count`, `Status`) VALUES
-(1, 1, 'Edwin\'s CMS PHP course is awsome', 'Jonh Dough', '2018-09-06', 'image_1.jpg', 'Wow i really really like this course.', 'edwin, php, javascript', 0, 'draft'),
-(2, 52, 'Javascript Course Post', 'Belinda', '2018-09-17', 'image_2.jpg', 'Wow man this is really cool post can you call me?', 'Javascript2, course, class, Belina', 0, 'draft'),
-(4, 4, 'Javascript yay 2', 'Alexander Mifsud', '2018-09-17', '40084297_1744449952335073_6360448524986875904_n.jpg', 'Content that i added myself.', 'Javascript, course, class, great', 4, 'Draft'),
-(5, 50, 'Added post 100', 'Alexander Mifsud', '2018-09-21', 'Images-Hd-Steampunk-Backgrounds.jpg', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus accumsan, eros a bibendum bibendum, enim felis viverra mi, eget bibendum urna eros eu arcu. Phasellus finibus laoreet aliquam. Quisque ultricies facilisis elit quis fermentum. Donec et mauris ac felis eleifend faucibus dignissim at felis. Etiam nec finibus mauris, at consequat massa. Vivamus iaculis turpis a maximus mollis. Nulla facilisi. Vivamus fermentum luctus pulvinar. Sed mattis purus eu odio viverra maximus. Fusce quis turpis efficitur, laoreet odio vitae, laoreet augue. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed dapibus ante eget bibendum mattis.', 'Python, java, javascript, php', 4, 'Draft');
+(1, 1, 'Edwin\'s CMS PHP course is awsome', 'Jonh Dough', '2018-09-24', 'image_1.jpg', 'Wow i really really like this course.', 'edwin, php, javascript', 1, 'draft'),
+(2, 52, 'Javascript Course Post', 'Belinda', '2018-09-24', 'image_2.jpg', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dictum sollicitudin augue, in pretium sem pulvinar ut. Proin lacinia libero id felis molestie lacinia. Integer tortor sem, volutpat ut porta sit amet, auctor a purus. Suspendisse sit amet maximus tortor, et porta lorem. Maecenas at sapien a enim facilisis iaculis. Duis viverra elementum lacus quis euismod. Nunc elit erat, mollis venenatis porttitor eu, tincidunt in magna.', 'Javascript2, course, class, Belina', 0, 'published');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE `users` (
+  `Id` int(3) NOT NULL,
+  `username` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `firstname` varchar(255) NOT NULL,
+  `lastname` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `image` text NOT NULL,
+  `role` varchar(255) NOT NULL,
+  `randSalt` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`Id`, `username`, `password`, `firstname`, `lastname`, `email`, `image`, `role`, `randSalt`) VALUES
+(1, 'rico', '123', 'Rico', 'Suave', 'ricosuave@gmail.com', '', 'subscriber', ''),
+(9, 'alexanderm.1496@gmail.com', 'qwerty789', 'Clarence', 'PotatoHead', 'clarencepotatote@gmail.com', '', 'subscriber', ''),
+(10, 'BigWillyPete69', 'somepassword123', 'William', 'Peterson', 'peterson343@gmail.com', '', 'subscriber', '');
 
 --
 -- Indexes for dumped tables
@@ -86,9 +140,21 @@ ALTER TABLE `categories`
   ADD PRIMARY KEY (`Id`);
 
 --
+-- Indexes for table `comments`
+--
+ALTER TABLE `comments`
+  ADD PRIMARY KEY (`Id`);
+
+--
 -- Indexes for table `posts`
 --
 ALTER TABLE `posts`
+  ADD PRIMARY KEY (`Id`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
   ADD PRIMARY KEY (`Id`);
 
 --
@@ -99,13 +165,25 @@ ALTER TABLE `posts`
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `Id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+  MODIFY `Id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
+
+--
+-- AUTO_INCREMENT for table `comments`
+--
+ALTER TABLE `comments`
+  MODIFY `Id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `posts`
 --
 ALTER TABLE `posts`
-  MODIFY `Id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `Id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `Id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
