@@ -40,10 +40,10 @@
                                         $select_all_posts = mysqli_query($connection, $query);
                                         confirmQuery($select_all_posts);
 
-                                        $post_counts = mysqli_num_rows($select_all_posts);
+                                        $post_count = mysqli_num_rows($select_all_posts);
 
                                         ?>
-                                        <div class='huge'><?php echo $post_counts; ?></div>
+                                        <div class='huge'><?php echo $post_count; ?></div>
                                         <div>Posts</div>
                                     </div>
                                 </div>
@@ -153,6 +153,29 @@
                 </div>
                 <!-- /.row -->
 
+
+                <?php
+
+                $query = "SELECT * FROM posts WHERE Status = 'draft';";
+                $select_all_draft_posts = mysqli_query($connection, $query);
+                confirmQuery($select_all_draft_posts);
+
+                $post_draft_count = mysqli_num_rows($select_all_draft_posts);
+
+                $query = "SELECT * FROM comments WHERE Status = 'unapproved';";
+                $select_all_unapproved_comments = mysqli_query($connection, $query);
+                confirmQuery($select_all_unapproved_comments);
+
+                $unapproved_comment_count = mysqli_num_rows($select_all_unapproved_comments);
+
+                $query = "SELECT * FROM users WHERE role = 'subscriber';";
+                $select_all_subscribers = mysqli_query($connection, $query);
+                confirmQuery($select_all_subscribers);
+
+                $sub_count = mysqli_num_rows($select_all_subscribers);
+
+                ?>
+
                 <div class="row">
 
 
@@ -163,7 +186,19 @@
                         function drawChart() {
                             var data = google.visualization.arrayToDataTable([
                                 ['Data', 'Count'],
-                                ['Posts', 1000],
+
+
+
+                                <?php
+
+                                $element_text = ['Active Posts', 'Draft Posts', 'Comments', 'Pending Comments', 'Users', 'Subscribers','Categories'];
+                                $element_count = [$post_count, $post_draft_count, $comment_count, $unapproved_comment_count, $user_count, $sub_count, $cat_count];
+
+                                for ($i = 0; $i < count($element_text); $i++) {
+                                    echo "['$element_text[$i]'" . "," . $element_count[$i] . "],";
+                                }
+
+                                ?>
                             ]);
 
                             var options = {
