@@ -20,7 +20,7 @@ if(isset($_POST['create_post'])) {
     $post_tags         = $_POST['post_tags'];
     $post_content      = addslashes($_POST['post_content']);
     $post_date         = date('d-m-y');
-//    $post_comment_count = 4;
+    $post_comment_count = 0;
 
     move_uploaded_file($post_image_temp, "../images/$post_image");
 
@@ -44,6 +44,8 @@ if(isset($_POST['create_post'])) {
     </div>
 
     <div class="form-group">
+        <label for="post_category_id">Category: </label>
+        <br>
         <?php
 
         $query = "SELECT * FROM categories;";
@@ -74,12 +76,6 @@ if(isset($_POST['create_post'])) {
     <div class="form-group">
        <label for="title">Post Author</label>
         <input type="text" class="form-control" name="author">
-    </div>
-
-
-    <div class="form-group">
-        <label for="post_status">Post Status</label>
-        <input type="text" class="form-control" name="post_status">
     </div>
 
     <div class="form-group">
