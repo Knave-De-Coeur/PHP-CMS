@@ -22,7 +22,10 @@ if(isset($_GET['u_id'])) {
         $user_email        = $row['email'];
         $user_password     = $row['password'];
         $user_image        = $row['image'];
+        $salt              = $row['salt'];
     }
+
+    $user_password = crypt($user_password, $salt);
 }
 
 if(isset($_POST['update_user']))
@@ -40,15 +43,24 @@ if(isset($_POST['update_user']))
 
     move_uploaded_file($user_image_temp, "../images/$user_image");
 
+    $query = "SELECT randSalt FROM users";
+    $select_randsalt_query = mysqli_query($connection, $query);
+    confirmQuery($select_randsalt_query);
+
+    $row = mysqli_fetch_array($select_randsalt_query);
+    $salt = $row['randSalt'];
+
+    $hashed_password = crypt($user_password, $salt);
+
     $query = "UPDATE users SET firstname='$user_firstname', lastname='$user_lastname', username = '$user_username',
-                                email='$user_email', role='$user_role',image='$user_image'
+                                email='$user_email', role='$user_role',image='$user_image', password='$hashed_password'
               WHERE Id = $user_id; ";
 
     $update_user_query = mysqli_query($connection, $query);
 
     confirmQuery($update_user_query);
 
-    echo "User Updated!";
+    echo "<p class='bg-success'>User Updated! <a href='users.php'>Edit Other Posts</a></p>";
 
 }
 ?>
@@ -83,7 +95,7 @@ if(isset($_POST['update_user']))
 
     <div class="form-group">
         <select name="user_role" id="">
-            <option value="subscriber"><?php echo $user_role; ?></option>
+            <option value="<?php echo $user_role; ?>"><?php echo $user_role; ?></option>
 
             <?php
 

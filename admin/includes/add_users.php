@@ -19,25 +19,23 @@ if(isset($_POST['create_user'])) {
 
     move_uploaded_file($user_image_temp, "../images/$user_image");
 
-    $query = "INSERT INTO users (firstname, lastname, username, role, Image, email, password, randSalt)
-              VALUES ('$user_firstname', '$user_lastname', '$user_username', '$user_role', '$user_image', '$user_email', '$user_password', ''); ";
+    $query = "INSERT INTO users (firstname, lastname, username, role, Image, email, password)
+              VALUES ('$user_firstname', '$user_lastname', '$user_username', '$user_role', '$user_image', '$user_email', '$user_password'); ";
 
 
     $create_post_query = mysqli_query($connection, $query);
 
     confirmQuery($create_post_query);
 
-    echo "User Created! : " . " " . "<a class='btn btn-primary' href='users.php'>View Users</a>";
+    $the_last_inserted_id = mysqli_insert_id($connection);
+
+    echo "<p class='bg-success'>User Created! <a href='users.php?source=edit_user&u_id=$the_last_inserted_id'>Edit User</a> -Or- <a href='users.php'>Edit Other Users</a></p>";
 }
 ?>
 
 <form action="" method="post" enctype="multipart/form-data">
 
 
-    <div class="form-group">
-       <label for="username">Username</label>
-        <input type="text" class="form-control" name="username">
-    </div>
 
     <div class="form-group">
         <label for="first_name">First Name</label>
@@ -47,6 +45,11 @@ if(isset($_POST['create_user'])) {
     <div class="form-group">
         <label for="last_name">Last Name</label>
         <input type="text" class="form-control" name="last_name">
+    </div>
+
+    <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" class="form-control" name="username">
     </div>
 
     <div class="form-group">

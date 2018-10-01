@@ -37,17 +37,20 @@
                 ?>
 
 
-                <li><a href="admin">Admin</a></li>
 
                 <?php
 
                 if(isset($_SESSION['role'])) {
+                    if($_SESSION['role'] === 'admin') {
+                        echo "<li><a href='admin/index.php'>Admin</a></li>";
+                    }
                     if(isset($_GET['p_id'])) {
                         $post_Id = $_GET['p_id'];
                             echo "<li><a href='admin/posts.php?source=edit_post&p_id=$post_Id'>Edit Post</a></li>";
                     }
                 }
 
+                echo "<li><a href='registration.php'>Register</a></li>";
                 ?>
             </ul>
         </div>
