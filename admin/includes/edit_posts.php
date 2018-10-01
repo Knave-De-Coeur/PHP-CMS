@@ -115,8 +115,6 @@ if(isset($_POST['update_post'])) {
 
 
     <div class="form-group">
-        <label for="post_status">Status: </label>
-        <br>
         <select name="post_status" id="">
             <option value="<?php echo $post_status; ?>"><?php echo $post_status; ?></option>
             <?php

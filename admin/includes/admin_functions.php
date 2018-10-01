@@ -128,6 +128,7 @@ function GetAllPostsAndOutputRow() {
         echo "<td>$post_tags</td>";
         echo "<td>$post_comment</td>";
         echo "<td>$post_date</td>";
+        echo "<td><a href='../post.php?p_id=$post_Id'>View Post</a></td>";
         echo "<td><a href='posts.php?delete=$post_Id'>Delete</a><br /></td>";
         echo "<td><a href='posts.php?source=edit_post&p_id=$post_Id'>Edit</a></td>";
         echo "</tr>";

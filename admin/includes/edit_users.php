@@ -82,7 +82,6 @@ if(isset($_POST['update_user']))
     </div>
 
     <div class="form-group">
-        <label for="user_role">Role</label>
         <select name="user_role" id="">
             <option value="subscriber"><?php echo $user_role; ?></option>
 
@@ -100,15 +99,6 @@ if(isset($_POST['update_user']))
             ?>
         </select>
     </div>
-
-<!--    <div class="form-group">-->
-<!--        <select name="post_status" id="">-->
-<!--            <option value="draft">Post Status</option>-->
-<!--            <option value="published">Published</option>-->
-<!--            <option value="draft">Draft</option>-->
-<!--        </select>-->
-<!--    </div>-->
-
 
 
     <div class="form-group">

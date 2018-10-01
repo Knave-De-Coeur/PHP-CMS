@@ -69,7 +69,7 @@ if(isset($_POST['checkBoxArray'])) {
 
         <div class="col-xs-4">
             <input type="submit" name="submit" class="btn btn-success" value="Apply">
-            <input type="submit" name="add_new" class="btn btn-primary" value="Add New">
+            <a class="btn btn-primary" href="posts.php?source=add_post">Add Posts</a>
         </div>
 
         <thead>
@@ -84,6 +84,7 @@ if(isset($_POST['checkBoxArray'])) {
             <th>Tags</th>
             <th>Comments</th>
             <th>Date</th>
+            <th>View</th>
             <th>Delete</th>
             <th>Edit</th>
         </tr>

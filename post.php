@@ -62,24 +62,27 @@
 
             <?php
 
-            if (isset($_POST['create_comment']))
-            {
+            if (isset($_POST['create_comment'])) {
                 $comment_author = $_POST['comment_author'];
                 $comment_email = $_POST['comment_email'];
                 $comment_content = $_POST['comment_content'];
 
-                $query = "INSERT INTO comments (Post_Id, Author, Email, Content, Date, Status) VALUES 
-                          ($post_id, '$comment_author', '$comment_email', '$comment_content', now(), 'unapproved'); ";
+                if(!empty($comment_author) && !empty($comment_email) && !empty($comment_email)) {
+                    $query = "INSERT INTO comments (Post_Id, Author, Email, Content, Date, Status) VALUES 
+                              ($post_id, '$comment_author', '$comment_email', '$comment_content', now(), 'unapproved'); ";
 
-                $query_insert_comment = mysqli_query($connection, $query);
+                    $query_insert_comment = mysqli_query($connection, $query);
 
-                confirmQuery($query_insert_comment);
+                    confirmQuery($query_insert_comment);
 
 
-                $query = "UPDATE posts SET Comment_Count = Comment_Count + 1 WHERE Id = $post_id";
-                $update_comment_count = mysqli_query($connection, $query);
+                    $query = "UPDATE posts SET Comment_Count = Comment_Count + 1 WHERE Id = $post_id";
+                    $update_comment_count = mysqli_query($connection, $query);
 
-                confirmQuery($update_comment_count);
+                    confirmQuery($update_comment_count);
+                } else {
+                    echo "<script>alert('Fields cannot be empty')</script>";
+                }
             }
 
             ?>
