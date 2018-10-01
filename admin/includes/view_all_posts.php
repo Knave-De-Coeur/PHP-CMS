@@ -19,27 +19,83 @@ if(isset($_GET['delete'])) {
 
 ?>
 
-<table class="table table-bordered table-hover">
-    <thead>
-    <tr>
-        <th>Id</th>
-        <th>Author</th>
-        <th>Title</th>
-        <th>Category</th>
-        <th>Status</th>
-        <th>Image</th>
-        <th>Tags</th>
-        <th>Comments</th>
-        <th>Date</th>
-        <th>Delete</th>
-        <th>Edit</th>
-    </tr>
-    </thead>
-    <tbody>
-    <?php
+<?php
 
-    GetAllPostsAndOutputRow();
+if(isset($_POST['checkBoxArray'])) {
+    $post_ids = $_POST['checkBoxArray'];
 
-    ?>
-    </tbody>
-</table>
+    foreach ($post_ids as $postValueId) {
+        $bulk_options = $_POST['bulk_options'];
+        switch ($bulk_options) {
+            case 'published':
+                $query = "UPDATE posts SET Status = '$bulk_options' WHERE Id = $postValueId; ";
+                $update_post_to_published = mysqli_query($connection, $query);
+                confirmQuery($update_post_to_published);
+                break;
+
+            case 'draft':
+                $query = "UPDATE posts SET Status = '$bulk_options' WHERE Id = $postValueId; ";
+                $update_post_to_draft = mysqli_query($connection, $query);
+                confirmQuery($update_post_to_draft);
+                break;
+
+            case 'delete':
+                $query = "DELETE FROM posts WHERE Id = $postValueId; ";
+                $update_post_to_draft = mysqli_query($connection, $query);
+                confirmQuery($update_post_to_draft);
+                break;
+
+            default:
+                break;
+        }
+    }
+}
+
+?>
+
+<form action="" method="post">
+
+
+
+    <table class="table table-bordered table-hover" >
+        <div id="bulkOptionsContainer" class="col-xs-4">
+            <select class="form-control" name="bulk_options" id="">
+                <option value="">Select Options</option>
+                <option value="published">Publish</option>
+                <option value="draft">Draft</option>
+                <option value="delete">Delete</option>
+            </select>
+        </div>
+
+        <div class="col-xs-4">
+            <input type="submit" name="submit" class="btn btn-success" value="Apply">
+            <input type="submit" name="add_new" class="btn btn-primary" value="Add New">
+        </div>
+
+        <thead>
+        <tr>
+            <th><input id="selectAllBoxes" type="checkbox"></th>
+            <th>Id</th>
+            <th>Author</th>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Status</th>
+            <th>Image</th>
+            <th>Tags</th>
+            <th>Comments</th>
+            <th>Date</th>
+            <th>Delete</th>
+            <th>Edit</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php
+
+        GetAllPostsAndOutputRow();
+
+        ?>
+        </tbody>
+    </table>
+</form>
+
+

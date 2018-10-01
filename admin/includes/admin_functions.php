@@ -118,6 +118,7 @@ function GetAllPostsAndOutputRow() {
         $post_status = $row['Status'];
 
         echo "<tr>";
+        echo "<td><input class='checkboxes' type='checkbox' name='checkBoxArray[]' value='$post_Id'/></td>";
         echo "<td>$post_Id</td>";
         echo "<td>$post_author</td>";
         echo "<td>$post_title</td>";
