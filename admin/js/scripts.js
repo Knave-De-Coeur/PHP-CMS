@@ -28,5 +28,15 @@ $(document).ready(function() {
         } );
 });
 
+function loadUsersOnline() {
+    $.get("includes/admin_functions.php?onlineusers=result", function (data) {
+        $(".usersonline").text(data);
+    });
+}
 
+setInterval(function () {
+
+    loadUsersOnline();
+
+}, 500);
 
