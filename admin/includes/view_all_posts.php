@@ -55,8 +55,8 @@ if(isset($_POST['checkBoxArray'])) {
                 confirmQuery($select_post_query);
 
                 while ($row = mysqli_fetch_array($select_post_query)) {
-                    $post_title = $row['Title'];
-                    $post_author = $row['Author'];
+                    $post_title = addslashes($row['Title']);
+                    $post_author = addslashes($row['Author']);
                     $post_category_id = $row['Post_Category_Id'];
                     $post_date = $row['Date'];
                     $post_image = $row['Image'];
