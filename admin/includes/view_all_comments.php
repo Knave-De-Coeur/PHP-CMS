@@ -29,6 +29,8 @@ if(isset($_GET['edit'])) {
     header("Location: comments.php");
 }
 
+
+
 ?>
 
 <table class="table table-bordered table-hover">
@@ -49,7 +51,7 @@ if(isset($_GET['edit'])) {
     <tbody>
     <?php
 
-    GetAllCommentsAndOutputRow();
+    GetCommentsAndOutputRow();
 
     ?>
     </tbody>

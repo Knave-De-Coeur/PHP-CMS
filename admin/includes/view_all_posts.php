@@ -6,6 +6,9 @@
  * Time: 12:50
  */
 
+include "classes/Comment.php";
+include "classes/Post.php";
+
 if(isset($_GET['delete'])) {
     $post_id = $_GET['delete'];
     $query = "DELETE FROM posts WHERE Id = " . $post_id;

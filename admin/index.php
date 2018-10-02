@@ -198,7 +198,7 @@
 
                                 <?php
 
-                                $element_text = ['All Posts', 'Active Posts', 'Draft Posts', 'Comments', 'Pending Comments', 'Users', 'Subscribers','Categories'];
+                                $element_text = ['All Posts', 'Active Posts', 'Draft Posts', 'Comments', 'Pending Comments', 'User', 'Subscribers','Categories'];
                                 $element_count = [$post_count, $post_published_count, $post_draft_count, $comment_count, $unapproved_comment_count, $user_count, $sub_count, $cat_count];
 
                                 for ($i = 0; $i < count($element_text); $i++) {

@@ -107,34 +107,49 @@ function GetAllPostsAndOutputRow() {
     $queryAllPosts = mysqli_query($connection, $query);
 
     while($row = mysqli_fetch_assoc($queryAllPosts)){
-        $post_Id = $row['Id'];
-        $post_title = stripslashes($row['Title']);
-        $post_author = stripslashes($row['Author']);
-        $post_categoryName = FindCategoryByPostId($row['Post_Category_Id']);
-        $post_date = $row['Date'];
-        $post_image = $row['Image'];
-        $post_tags = $row['Tags'];
-        $post_comment = $row['Comment_Count'];
-        $post_status = $row['Status'];
-        $post_views = $row['View_Count'];
+
+        $post = new Post();
+
+
+        $post->setId($row['Id']);
+        $post->setTitle(stripslashes($row['Title']));
+        $post->setAuthor(stripslashes($row['Author']));
+        $post->setPostCategoryID(FindCategoryByPostId($row['Post_Category_Id']));
+        $post->setDate($row['Date']);
+        $post->setImage($row['Image']);
+        $post->setTags($row['Tags']);
+        $post->setStatus($row['Status']);
+        $post->setViewCount($row['View_Count']);
+        $post->setComments(getCommentsByPostId($row['Id']));
 
         echo "<tr>";
-        echo "<td><input class='checkboxes' type='checkbox' name='checkBoxArray[]' value='$post_Id'/></td>";
-        echo "<td>$post_Id</td>";
-        echo "<td>$post_author</td>";
-        echo "<td>$post_title</td>";
-        echo "<td>$post_categoryName</td>";
-        echo "<td>$post_status</td>";
-        echo "<td><img style='width: 100px;' src='../images/$post_image ' /></td>";
-        echo "<td>$post_tags</td>";
-        echo "<td>$post_comment</td>";
-        echo "<td>$post_date</td>";
-        echo "<td><a href='../post.php?p_id=$post_Id'>View Post</a></td>";
-        echo "<td><a onclick=\"javascript: return confirm('Are you sure you want to delete?');\" href='posts.php?delete=$post_Id'>Delete</a><br /></td>";
-        echo "<td><a href='posts.php?source=edit_post&p_id=$post_Id'>Edit</a></td>";
-        echo "<td><a href='posts.php?reset_views=$post_Id'>$post_views</a> </td>";
+        echo "<td><input class='checkboxes' type='checkbox' name='checkBoxArray[]' value='$post->Id'/></td>";
+        echo "<td>$post->Id</td>";
+        echo "<td>$post->author</td>";
+        echo "<td>$post->title</td>";
+        echo "<td>$post->postCategoryId</td>";
+        echo "<td>$post->status</td>";
+        echo "<td><img style='width: 100px;' src='../images/$post->image ' /></td>";
+        echo "<td>$post->tags</td>";
+        echo "<td><a href='post_comments.php?id=$post->Id'>". count($post->getComments()) . "</a></td>";
+        echo "<td>$post->date</td>";
+        echo "<td><a href='../post.php?p_id=$post->Id'>View Post</a></td>";
+        echo "<td><a onclick=\"javascript: return confirm('Are you sure you want to delete?');\" href='posts.php?delete=$post->Id'>Delete</a><br /></td>";
+        echo "<td><a href='posts.php?source=edit_post&p_id=$post->Id'>Edit</a></td>";
+        echo "<td><a href='posts.php?reset_views=$post->Id'>$post->viewCount</a> </td>";
         echo "</tr>";
     }
+}
+
+function getPosts() {
+//    $posts = [];
+//    global $connection;
+//
+//    $query = "SELECT * FROM posts ORDER BY Id DESC; ";
+//    $query_all_psots = mysqli_query($connection, $query);
+//    confirmQuery($query_all_psots);
+//
+//    while $row
 }
 
 function FindPostByCommentPostId($comment_post_Id)
@@ -152,9 +167,39 @@ function FindPostByCommentPostId($comment_post_Id)
     return $post_Title;
 }
 
-function GetAllCommentsAndOutputRow() {
+function getCommentsByPostId($post_id) {
+    $listOfComments = [];
     global $connection;
-    $query = "SELECT * FROM comments ORDER BY Id DESC; ";
+    $query_comments = "SELECT * FROM comments WHERE Post_Id = $post_id";
+    $comments_per_post = mysqli_query($connection, $query_comments);
+    confirmQuery($comments_per_post);
+
+    while ($row = mysqli_fetch_assoc($comments_per_post)) {
+        $comment = new Comment();
+
+        $comment->setId($row['Id']);
+        $comment->setPostId($row['Post_Id']);
+        $comment->setAuthor($row['Author']);
+        $comment->setEmail($row['Email']);
+        $comment->setContent($row['Content']);
+        $comment->setDate($row['Date']);
+        $comment->setStatus($row['Status']);
+
+        array_push($listOfComments, $comment);
+    }
+
+    return $listOfComments;
+}
+
+function GetCommentsAndOutputRow($post_id = null) {
+    global $connection;
+
+    if($post_id != null) {
+        $query = "SELECT * FROM comments WHERE Post_Id = $post_id ORDER BY Id DESC; ";
+    } else {
+        $query = "SELECT * FROM comments ORDER BY Id DESC; ";
+    }
+
     $queryAllComments = mysqli_query($connection, $query);
 
     while($row = mysqli_fetch_assoc($queryAllComments)){
@@ -175,9 +220,16 @@ function GetAllCommentsAndOutputRow() {
         echo "<td>$comment_status</td>";
         echo "<td><a href='posts.php?source=edit_post&p_id=$comment_post_Id'>$comment_post_Title</a></td>";
         echo "<td>$comment_date</td>";
-        echo "<td><a href='comments.php?edit=$comment_Id&status=approved'>Approve</a></td>";
-        echo "<td><a href='comments.php?edit=$comment_Id&status=unapproved'>Unapprove</a></td>";
-        echo "<td><a href='comments.php?delete=$comment_Id'>Delete</a></td>";
+
+        if($post_id == null) {
+            echo "<td><a href='comments.php?edit=$comment_Id&status=approved'>Approve</a></td>";
+            echo "<td><a href='comments.php?edit=$comment_Id&status=unapproved'>Unapprove</a></td>";
+            echo "<td><a href='comments.php?delete=$comment_Id'>Delete</a></td>";
+        } else {
+            echo "<td><a href='post_comments.php?id=$post_id&edit=$comment_Id&status=approved'>Approve</a></td>";
+            echo "<td><a href='post_comments.php?id=$post_id&edit=$comment_Id&status=unapproved'>Unapprove</a></td>";
+            echo "<td><a href='post_comments.php?id=$post_id&delete=$comment_Id'>Delete</a></td>";
+        }
     }
 }
 
