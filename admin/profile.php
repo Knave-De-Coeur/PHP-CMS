@@ -13,9 +13,9 @@ if(isset($_SESSION['username'])) {
 
     while($row = mysqli_fetch_assoc($query_user_username)) {
         $user_id = $row['Id'];
-        $user_username = $row['username'];
+        $user_username = stripslashes($row['username']);
         $user_password = $row['password'];
-        $user_firstname = $row['firstname'];
+        $user_firstname = stripslashes($row['firstname']);
         $user_lastname = $row['lastname'];
         $user_role = $row['role'];
         $user_email = $row['email'];
@@ -37,13 +37,32 @@ if(isset($_POST['update_user'])) {
 
     move_uploaded_file($user_image_temp, "../images/$user_image");
 
-    $query = "UPDATE users SET firstname='$user_firstname', lastname='$user_lastname', username = '$user_username',
-                                email='$user_email', role='$user_role',image='$user_image'
-              WHERE username = '$username'; ";
+    if(!empty($user_password)) {
+        $query_password = "SELECT password FROM users WHERE Id = $user_id; ";
+        $get_user_query = mysqli_query($connection, $query_password);
+        confirmQuery($get_user_query);
 
-    $update_user_query = mysqli_query($connection, $query);
+        $row = mysqli_fetch_array($get_user_query);
 
-    confirmQuery($update_user_query);
+        $db_user_password = $row['password'];
+
+        if($db_user_password != $user_password) {
+
+            $hashed_pasword = password_hash($user_password, PASSWORD_BCRYPT, array('cost' => 12) );
+        }
+
+        $query = "UPDATE users SET firstname='$user_firstname', lastname='$user_lastname', username = '$user_username',
+                                    email='$user_email', role='$user_role',image='$user_image', password='$hashed_pasword'
+                  WHERE Id = $user_id; ";
+
+        $update_user_query = mysqli_query($connection, $query);
+
+        confirmQuery($update_user_query);
+
+        echo "<p class='bg-success'>User Updated! <a href='users.php'>Edit Other Posts</a></p>";
+    } else {
+        echo "<p class='bg-warning'>Pasword Cannot be empty!</p>";
+    }
 
 }
 
@@ -91,36 +110,8 @@ if(isset($_POST['update_user'])) {
 
                         <div class="form-group">
                             <label for="password">Password</label>
-                            <input type="password" class="form-control" name="password" value="<?php echo $user_password; ?>">
+                            <input autocomplete="off" type="password" class="form-control" name="password" >
                         </div>
-
-                        <div class="form-group">
-                            <label for="user_role">Role</label>
-                            <select name="user_role" id="">
-                                <option value="subscriber"><?php echo $user_role; ?></option>
-
-                                <?php
-
-                                if($user_role == 'admin')
-                                {
-                                    echo "<option value='subscriber'>subscriber</option>";
-                                }
-                                else
-                                {
-                                    echo "<option value='admin'>admin</option>";
-                                }
-
-                                ?>
-                            </select>
-                        </div>
-
-                        <!--    <div class="form-group">-->
-                        <!--        <select name="post_status" id="">-->
-                        <!--            <option value="draft">Post Status</option>-->
-                        <!--            <option value="published">Published</option>-->
-                        <!--            <option value="draft">Draft</option>-->
-                        <!--        </select>-->
-                        <!--    </div>-->
 
 
 

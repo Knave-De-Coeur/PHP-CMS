@@ -18,51 +18,58 @@ if(isset($_GET['u_id'])) {
         $user_username     = stripslashes($row['username']);
         $user_firstname    = $row['firstname'];
         $user_lastname     = stripslashes($row['lastname']);
-        $user_role         = $row['role'];
         $user_email        = $row['email'];
         $user_password     = $row['password'];
         $user_image        = $row['image'];
-        $salt              = $row['randSalt'];
     }
 
-    $user_password = crypt($user_password, $salt);
+
+    if(isset($_POST['update_user']))
+    {
+        $user_username     = addslashes($_POST['username']);
+        $user_firstname    = $_POST['first_name'];
+        $user_lastname     = addslashes($_POST['last_name']);
+        $user_email        = $_POST['email'];
+        $user_password     = $_POST['password'];
+
+        $user_image        = $_FILES['user_image']['name'];
+        $user_image_temp   = $_FILES['user_image']['tmp_name'];
+
+
+        move_uploaded_file($user_image_temp, "../images/$user_image");
+
+        if(!empty($user_password)) {
+            $query_password = "SELECT password FROM users WHERE Id = $user_id; ";
+            $get_user_query = mysqli_query($connection, $query_password);
+            confirmQuery($get_user_query);
+
+            $row = mysqli_fetch_array($get_user_query);
+
+            $db_user_password = $row['password'];
+
+            if($db_user_password != $user_password) {
+
+                $hashed_pasword = password_hash($user_password, PASSWORD_BCRYPT, array('cost' => 12) );
+            }
+
+            $query = "UPDATE users SET firstname='$user_firstname', lastname='$user_lastname', username = '$user_username',
+                                    email='$user_email',image='$user_image', password='$hashed_pasword'
+                  WHERE Id = $user_id; ";
+
+            $update_user_query = mysqli_query($connection, $query);
+
+            confirmQuery($update_user_query);
+
+            echo "<p class='bg-success'>User Updated! <a href='users.php'>Edit Other Posts</a></p>";
+        } else {
+            echo "<p class='bg-warning'>Pasword Cannot be empty!</p>";
+        }
+
+    }
+} else {
+    header("Location: index.php");
 }
 
-if(isset($_POST['update_user']))
-{
-    $user_username     = addslashes($_POST['username']);
-    $user_firstname    = $_POST['first_name'];
-    $user_lastname     = addslashes($_POST['last_name']);
-    $user_role         = $_POST['user_role'];
-    $user_email        = $_POST['email'];
-    $user_password     = $_POST['password'];
-
-    $user_image        = $_FILES['user_image']['name'];
-    $user_image_temp   = $_FILES['user_image']['tmp_name'];
-
-
-    move_uploaded_file($user_image_temp, "../images/$user_image");
-
-    $query = "SELECT randSalt FROM users";
-    $select_randsalt_query = mysqli_query($connection, $query);
-    confirmQuery($select_randsalt_query);
-
-    $row = mysqli_fetch_array($select_randsalt_query);
-    $salt = $row['randSalt'];
-
-    $hashed_password = crypt($user_password, $salt);
-
-    $query = "UPDATE users SET firstname='$user_firstname', lastname='$user_lastname', username = '$user_username',
-                                email='$user_email', role='$user_role',image='$user_image', password='$hashed_password'
-              WHERE Id = $user_id; ";
-
-    $update_user_query = mysqli_query($connection, $query);
-
-    confirmQuery($update_user_query);
-
-    echo "<p class='bg-success'>User Updated! <a href='users.php'>Edit Other Posts</a></p>";
-
-}
 ?>
 
 <form action="" method="post" enctype="multipart/form-data">
@@ -90,26 +97,7 @@ if(isset($_POST['update_user']))
 
     <div class="form-group">
         <label for="password">Password</label>
-        <input type="password" class="form-control" name="password" value="<?php echo $user_password; ?>">
-    </div>
-
-    <div class="form-group">
-        <select name="user_role" id="">
-            <option value="<?php echo $user_role; ?>"><?php echo $user_role; ?></option>
-
-            <?php
-
-            if($user_role == 'admin')
-            {
-                echo "<option value='subscriber'>subscriber</option>";
-            }
-            else
-            {
-                echo "<option value='admin'>admin</option>";
-            }
-
-            ?>
-        </select>
+        <input autocomplete="off" type="password" class="form-control" name="password">
     </div>
 
 
