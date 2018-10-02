@@ -9,8 +9,8 @@ if(isset($_POST['create_post'])) {
 //    echo "Working";
     $post_title        = addslashes($_POST['title']);
     $post_category_id  = $_POST['post_category_id'];
-//    $post_user         = $_POST['user'];
-    $post_author       = addslashes($_POST['author']);
+    $post_user         = $_POST['user'];
+//    $post_author       = addslashes($_POST['author']);
     $post_status       = $_POST['post_status'];
 
     $post_image        = $_FILES['image']['name'];
@@ -24,8 +24,8 @@ if(isset($_POST['create_post'])) {
 
     move_uploaded_file($post_image_temp, "../images/$post_image");
 
-    $query = "INSERT INTO posts (Post_Category_Id, Title, Author, Date, Image, Content, Tags, Status) 
-              VALUES ({$post_category_id}, '{$post_title}', '{$post_author}', now(), '{$post_image}', '{$post_content}', '{$post_tags}', '{$post_status}'); ";
+    $query = "INSERT INTO posts (Post_Category_Id, Title, User_Id, Date, Image, Content, Tags, Status) 
+              VALUES ({$post_category_id}, '{$post_title}', $post_user, now(), '{$post_image}', '{$post_content}', '{$post_tags}', '{$post_status}'); ";
 
 
     $create_post_query = mysqli_query($connection, $query);
@@ -57,7 +57,7 @@ if(isset($_POST['create_post'])) {
         confirmQuery($querySelectAllCategories);
         ?>
 
-        <select name="post_category_id" id="post-category-select">
+        <select name="post_user" id="post-category-select">
 
             <?php
 
@@ -77,10 +77,37 @@ if(isset($_POST['create_post'])) {
         </select>
     </div>
 
+<!--    <div class="form-group">-->
+<!--       <label for="title">Post Author</label>-->
+<!--        <input type="text" class="form-control" name="author">-->
+<!--    </div>-->
+
+
     <div class="form-group">
-       <label for="title">Post Author</label>
-        <input type="text" class="form-control" name="author">
+        <label for="users">Users: </label>
+        <br>
+        <?php
+
+        $query = "SELECT * FROM users;";
+        $querySelectAllUsers = mysqli_query($connection, $query);
+        confirmQuery($querySelectAllUsers);
+        ?>
+
+        <select name="user" id="author-select">
+            <option value="0">Select User</option>
+            <?php
+
+
+            while($row = mysqli_fetch_assoc($querySelectAllUsers)) {
+                $user_id = $row['Id'];
+                $user_username = $row['username'];
+                echo "<option value='$user_id'>$user_username</option>";
+            }
+            ?>
+
+        </select>
     </div>
+
 
     <div class="form-group">
         <select name="post_status" id="">

@@ -31,7 +31,7 @@
                 while($row = mysqli_fetch_assoc($select_all_categories_query)) {
                     $post_id = $row['Id'];
                     $post_title = $row['Title'];
-                    $post_author = $row['Author'];
+                    $post_author = $row['User_Id'];
                     $post_date = $row['Date'];
                     $post_image = $row['Image'];
                     $post_tags = $row['Tags'];

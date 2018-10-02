@@ -32,6 +32,7 @@ if(isset($_GET['p_id'])) {
 if(isset($_POST['update_post'])) {
     $post_title         = addslashes($_POST['title']);
     $post_category_id   = $_POST['post_category_id'];
+    $post_user          = $_POST['post_user'];
     $post_author        = addslashes($_POST['author']);
     $post_status        = $_POST['post_status'];
 
@@ -64,7 +65,7 @@ if(isset($_POST['update_post'])) {
     move_uploaded_file($post_image_temp, "../images/$post_image");
 
     $query = "UPDATE posts SET 
-              Title='{$post_title}', Post_Category_Id=$post_category_id,  Date=NOW(), Image='$post_image', Author='{$post_author}', Content='{$post_content}', Tags='{$post_tags}', Status='$post_status' 
+              Title='{$post_title}', Post_Category_Id=$post_category_id,  Date=NOW(), Image='$post_image', User_Id = $post_user, Content='{$post_content}', Tags='{$post_tags}', Status='$post_status' 
               WHERE Id = $post_id";
 
 
@@ -94,7 +95,7 @@ if(isset($_POST['update_post'])) {
         confirmQuery($querySelectAllCategories);
         ?>
 
-        <select name="post_category_id" id="">
+        <select name="post_user" id="">
 
         <?php
 
@@ -115,8 +116,33 @@ if(isset($_POST['update_post'])) {
     </div>
 
     <div class="form-group">
-       <label for="title">Post Author</label>
-        <input type="text" class="form-control" name="author" value="<?php echo $post_author; ?>">
+        <label for="users">Users: </label>
+        <br>
+        <?php
+
+        $query = "SELECT * FROM users;";
+        $querySelectAllUsers = mysqli_query($connection, $query);
+        confirmQuery($querySelectAllUsers);
+        ?>
+
+        <select name="author" id="author-select">
+
+            <?php
+
+
+            while($row = mysqli_fetch_assoc($querySelectAllUsers)) {
+                $user_id = $row['Id'];
+                $user_username = $row['username'];
+                if($user_username == $post_author) {
+                    echo "<option selected='selected' value='$user_id'>$category_title</option>";
+                }
+                else{
+                    echo "<option value='$user_id'>$user_username</option>";
+                }
+            }
+            ?>
+
+        </select>
     </div>
 
 

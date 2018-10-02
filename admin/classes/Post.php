@@ -7,12 +7,14 @@
  */
 
 require_once("BaseCmsRecord.php");
+require_once("User.php");
 
 class Post extends BaseCmsRecord
 {
     public $postCategoryId;
     public $title;
     public $author;
+    public $user;
     public $date;
     public $image;
     public $content;
@@ -20,6 +22,16 @@ class Post extends BaseCmsRecord
     public $comments;
     public $status;
     public $viewCount;
+
+    /**
+     * Post constructor.
+     * @param $author
+     */
+    public function __construct()
+    {
+        $this->user = new User();
+    }
+
 
     /**
      * @return mixed
@@ -61,12 +73,33 @@ class Post extends BaseCmsRecord
         return $this->author;
     }
 
+    public function getPostUsername()
+    {
+        return $this->author->username;
+    }
+
     /**
      * @param mixed $author
      */
     public function setAuthor($author)
     {
         $this->author = $author;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param mixed $user
+     */
+    public function setUser($user)
+    {
+        $this->user = $user;
     }
 
     /**

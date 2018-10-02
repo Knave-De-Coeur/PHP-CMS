@@ -114,6 +114,9 @@ function GetAllPostsAndOutputRow() {
         $post->setId($row['Id']);
         $post->setTitle(stripslashes($row['Title']));
         $post->setAuthor(stripslashes($row['Author']));
+        if(isset($row['User_Id'])) {
+            $post->user = getPostUser($row['User_Id']);
+        }
         $post->setPostCategoryID(FindCategoryByPostId($row['Post_Category_Id']));
         $post->setDate($row['Date']);
         $post->setImage($row['Image']);
@@ -125,7 +128,15 @@ function GetAllPostsAndOutputRow() {
         echo "<tr>";
         echo "<td><input class='checkboxes' type='checkbox' name='checkBoxArray[]' value='$post->Id'/></td>";
         echo "<td>$post->Id</td>";
-        echo "<td>$post->author</td>";
+
+        if(!empty($post->author)) {
+            echo "<td>$post->author</td>";
+        } else if ($post->user->username != "N/A") {
+            echo "<td>{$post->user->username}</td>";
+        } else {
+            echo "<td>N/A</td>";
+        }
+
         echo "<td>$post->title</td>";
         echo "<td>$post->postCategoryId</td>";
         echo "<td>$post->status</td>";
@@ -141,15 +152,28 @@ function GetAllPostsAndOutputRow() {
     }
 }
 
-function getPosts() {
-//    $posts = [];
-//    global $connection;
-//
-//    $query = "SELECT * FROM posts ORDER BY Id DESC; ";
-//    $query_all_psots = mysqli_query($connection, $query);
-//    confirmQuery($query_all_psots);
-//
-//    while $row
+function getPostUser($user_Id) {
+
+    global $connection;
+    $query = "SELECT * FROM users WHERE Id = $user_Id; ";
+    $query_users = mysqli_query($connection, $query);
+    confirmQuery($query_users);
+
+    $author = new User();
+
+
+    if(mysqli_num_rows($query_users) > 0) {
+        while ($row = mysqli_fetch_assoc($query_users)) {
+
+            $author->setId($row['Id']);
+            $author->setFirstName($row['firstname']);
+            $author->setLastName($row['lastname']);
+            $author->setUsername($row['username']);
+        }
+    } else {
+        $author->setUsername("N/A");
+    }
+    return $author;
 }
 
 function FindPostByCommentPostId($comment_post_Id)
