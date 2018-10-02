@@ -20,8 +20,13 @@
             {
                 $post_id = $_GET['p_id'];
 
+                $view_query = "UPDATE posts SET View_Count = View_Count + 1 WHERE Id = $post_id; ";
+                $send_query = mysqli_query($connection, $view_query);
+                confirmQuery($send_query);
+
                 $query = "SELECT * FROM posts WHERE Id = $post_id; ";
                 $select_all_categories_query = mysqli_query($connection, $query);
+                confirmQuery($send_query);
 
                 while($row = mysqli_fetch_assoc($select_all_categories_query)) {
                     $post_id = $row['Id'];
@@ -29,8 +34,9 @@
                     $post_author = $row['Author'];
                     $post_date = $row['Date'];
                     $post_image = $row['Image'];
-                    $post_tags = $row['Tag'];
+                    $post_tags = $row['Tags'];
                     $post_content = $row['Content'];
+                    $post_views = $row['View_Count'];
 
             ?>
 
@@ -143,6 +149,8 @@
 
                     <?php
                 }
+            } else {
+                header("Location: index.php");
             }
             ?>
 

@@ -17,6 +17,10 @@ if(isset($_GET['delete'])) {
     header("Location: posts.php");
 }
 
+if(isset($_GET['reset_views'])) {
+    resetPostViewCount($_GET['reset_views']);
+}
+
 ?>
 
 <?php
@@ -113,6 +117,7 @@ if(isset($_POST['checkBoxArray'])) {
             <th>View</th>
             <th>Delete</th>
             <th>Edit</th>
+            <th>Views</th>
         </tr>
         </thead>
         <tbody>

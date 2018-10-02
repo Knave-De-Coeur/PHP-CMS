@@ -22,7 +22,7 @@ if(isset($_GET['u_id'])) {
         $user_email        = $row['email'];
         $user_password     = $row['password'];
         $user_image        = $row['image'];
-        $salt              = $row['salt'];
+        $salt              = $row['randSalt'];
     }
 
     $user_password = crypt($user_password, $salt);

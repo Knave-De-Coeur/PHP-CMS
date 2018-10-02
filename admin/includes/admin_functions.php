@@ -116,6 +116,7 @@ function GetAllPostsAndOutputRow() {
         $post_tags = $row['Tags'];
         $post_comment = $row['Comment_Count'];
         $post_status = $row['Status'];
+        $post_views = $row['View_Count'];
 
         echo "<tr>";
         echo "<td><input class='checkboxes' type='checkbox' name='checkBoxArray[]' value='$post_Id'/></td>";
@@ -131,6 +132,7 @@ function GetAllPostsAndOutputRow() {
         echo "<td><a href='../post.php?p_id=$post_Id'>View Post</a></td>";
         echo "<td><a onclick=\"javascript: return confirm('Are you sure you want to delete?');\" href='posts.php?delete=$post_Id'>Delete</a><br /></td>";
         echo "<td><a href='posts.php?source=edit_post&p_id=$post_Id'>Edit</a></td>";
+        echo "<td><a href='posts.php?reset_views=$post_Id'>$post_views</a> </td>";
         echo "</tr>";
     }
 }
@@ -177,6 +179,13 @@ function GetAllCommentsAndOutputRow() {
         echo "<td><a href='comments.php?edit=$comment_Id&status=unapproved'>Unapprove</a></td>";
         echo "<td><a href='comments.php?delete=$comment_Id'>Delete</a></td>";
     }
+}
+
+function resetPostViewCount($post_id) {
+    global $connection;
+    $reset_view_query = "UPDATE posts SET View_Count = 0 WHERE Id = $post_id; ";
+    $execute_reset_query = mysqli_query($connection, $reset_view_query);
+    confirmQuery($execute_reset_query);
 }
 
 // users

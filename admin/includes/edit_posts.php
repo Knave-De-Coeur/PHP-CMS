@@ -25,6 +25,7 @@ if(isset($_GET['p_id'])) {
         $post_tags = $row['Tags'];
         $post_comment = $row['Comment_Count'];
         $post_status = $row['Status'];
+        $post_views = $row['View_Count'];
     }
 }
 
@@ -41,6 +42,11 @@ if(isset($_POST['update_post'])) {
     $post_tags          = $_POST['post_tags'];
     $post_content       = addslashes($_POST['post_content']);
     $post_date          = date('d-m-y');
+
+    if(isset($_POST['reset_views'])) {
+        resetPostViewCount($post_id);
+        $post_views = 0;
+    }
 
     if(empty($post_image))
     {
@@ -147,6 +153,10 @@ if(isset($_POST['update_post'])) {
         <textarea class="form-control "name="post_content" id="body" cols="30" rows="10" ><?php echo $post_content; ?></textarea>
     </div>
 
+    <div class="form-group">
+        <label for="reset_view">Reset View Count: (<?php echo $post_views; ?>)</label>
+        <input type="checkbox" name="reset_views">
+    </div>
 
 
     <div class="form-group">
