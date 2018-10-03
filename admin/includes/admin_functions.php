@@ -145,7 +145,8 @@ function GetAllPostsAndOutputRow() {
         echo "<td><a href='post_comments.php?id=$post->Id'>". count($post->getComments()) . "</a></td>";
         echo "<td>$post->date</td>";
         echo "<td><a href='../post.php?p_id=$post->Id'>View Post</a></td>";
-        echo "<td><a onclick=\"javascript: return confirm('Are you sure you want to delete?');\" href='posts.php?delete=$post->Id'>Delete</a><br /></td>";
+//        echo "<td><a onclick=\"javascript: return confirm('Are you sure you want to delete?');\" href='posts.php?delete=$post->Id'>Delete</a><br /></td>";
+        echo "<td><a rel='$post->Id' class='delete_link' href='javascript:void(0)'>Delete</a><br /></td>";
         echo "<td><a href='posts.php?source=edit_post&p_id=$post->Id'>Edit</a></td>";
         echo "<td><a href='posts.php?reset_views=$post->Id'>$post->viewCount</a> </td>";
         echo "</tr>";

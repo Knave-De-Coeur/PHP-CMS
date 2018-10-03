@@ -8,6 +8,7 @@
 
 include "classes/Comment.php";
 include "classes/Post.php";
+include "delete_modal.php";
 
 if(isset($_GET['delete'])) {
     $post_id = $_GET['delete'];
@@ -84,6 +85,21 @@ if(isset($_POST['checkBoxArray'])) {
 }
 
 ?>
+
+<script>
+    $(document).ready(function () {
+
+        $(".delete_link").click(function () {
+           var id = $(this).attr("rel");
+
+           var delete_url = "posts.php?delete=" + id + "";
+
+           $(".modal_delete_link").attr("href", delete_url);
+
+           $("#myModal").modal('show');
+        });
+    });
+</script>
 
 <form action="" method="post">
 

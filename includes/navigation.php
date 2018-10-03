@@ -52,6 +52,7 @@
 
                 echo "<li><a href='registration.php'>Register</a></li>";
                 ?>
+                <li><a href="contact.php">Contact</a></li>
             </ul>
         </div>
         <!-- /.navbar-collapse -->
