@@ -28,17 +28,27 @@
                         $page_1 = ($page * $per_page) - $per_page;
                     }
 
-                    $post_query_count = "SELECT * FROM posts; ";
+                    $post_query_count = "SELECT * FROM posts WHERE Status = 'published'; ";
                     $find_count = mysqli_query($connection, $post_query_count);
                     $pageCount = mysqli_num_rows($find_count);
 
                     $pageCount = ceil($pageCount / $per_page);
 
+                if(isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
+                    // inner join between psot and user
+                    $query = "SELECT posts.Id as postId, users.Id as userId, posts.Title, posts.Date, posts.Image, posts.Content, posts.Status, users.username 
+                              FROM posts
+                              LEFT JOIN users ON posts.User_Id = users.Id 
+                              ORDER BY posts.Id DESC LIMIT $page_1, $per_page;";
+                } else {
                     // inner join between psot and user
                     $query = "SELECT posts.Id as postId, users.Id as userId, posts.Title, posts.Date, posts.Image, posts.Content, posts.Status, users.username 
                               FROM posts
                               LEFT JOIN users ON posts.User_Id = users.Id 
                               WHERE Status = 'published' ORDER BY posts.Id DESC LIMIT $page_1, $per_page;";
+                }
+
+
                     $select_al_published_categories_query = mysqli_query($connection, $query);
 
                     if(mysqli_num_rows($select_al_published_categories_query) > 0) {
@@ -59,10 +69,7 @@
 
                 ?>
 
-                <h1 class="page-header">
-                    <?php echo $pageCount; ?>
-                    <small>Secondary Text</small>
-                </h1>
+
 
                 <!-- First Blog Post -->
                 <h2>
@@ -94,7 +101,7 @@
                 <?php
                             }
                         } else {
-                            echo "<h1>No Posts to show</h1>";
+                            echo "<h1 class='text-center'>No Posts to show</h1>";
                         }
                 ?>
 
