@@ -18,6 +18,7 @@ if(isset($_GET['p_id'])) {
         $post_Id = $row['Id'];
         $post_title = stripslashes($row['Title']);
         $post_author = stripslashes($row['Author']);
+        $post_user = $row['User_Id'];
         $post_category_id = $row['Post_Category_Id'];
         $post_date = $row['Date'];
         $post_image = $row['Image'];
@@ -49,15 +50,13 @@ if(isset($_POST['update_post'])) {
         $post_views = 0;
     }
 
-    if(empty($post_image))
-    {
+    if(empty($post_image)) {
         $query = "SELECT * FROM posts WHERE Id = $post_id; ";
         $select_image = mysqli_query($connection, $query);
 
         confirmQuery($select_image);
 
-        while( $row = mysqli_fetch_assoc($select_image))
-        {
+        while( $row = mysqli_fetch_assoc($select_image)) {
             $post_image = $row['Image'];
         }
     }
@@ -65,8 +64,8 @@ if(isset($_POST['update_post'])) {
     move_uploaded_file($post_image_temp, "../images/$post_image");
 
     $query = "UPDATE posts SET 
-              Title='{$post_title}', Post_Category_Id=$post_category_id,  Date=NOW(), Image='$post_image', User_Id = $post_user, Content='{$post_content}', Tags='{$post_tags}', Status='$post_status' 
-              WHERE Id = $post_id";
+              Title='$post_title', Post_Category_Id=$post_category_id,  Date=NOW(), Image='$post_image', User_Id=$post_user, Content='$post_content', Tags='$post_tags', Status='$post_status' 
+              WHERE Id = $post_id; ";
 
 
 
@@ -95,7 +94,7 @@ if(isset($_POST['update_post'])) {
         confirmQuery($querySelectAllCategories);
         ?>
 
-        <select name="post_user" id="">
+        <select name="post_category_id" id="">
 
         <?php
 
@@ -125,7 +124,7 @@ if(isset($_POST['update_post'])) {
         confirmQuery($querySelectAllUsers);
         ?>
 
-        <select name="author" id="author-select">
+        <select name="post_user" id="user-select">
 
             <?php
 
@@ -133,8 +132,8 @@ if(isset($_POST['update_post'])) {
             while($row = mysqli_fetch_assoc($querySelectAllUsers)) {
                 $user_id = $row['Id'];
                 $user_username = $row['username'];
-                if($user_username == $post_author) {
-                    echo "<option selected='selected' value='$user_id'>$category_title</option>";
+                if($user_id == $post_user) {
+                    echo "<option selected='selected' value='$user_id'>$user_username</option>";
                 }
                 else{
                     echo "<option value='$user_id'>$user_username</option>";
@@ -147,6 +146,8 @@ if(isset($_POST['update_post'])) {
 
 
     <div class="form-group">
+        <label for="post_status">Post Status:</label>
+        <br>
         <select name="post_status" id="">
             <option value="<?php echo $post_status; ?>"><?php echo $post_status; ?></option>
             <?php

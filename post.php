@@ -16,27 +16,31 @@
             <?php
 
 
-            if(isset($_GET['p_id']))
-            {
+            if(isset($_GET['p_id'])) {
                 $post_id = $_GET['p_id'];
 
                 $view_query = "UPDATE posts SET View_Count = View_Count + 1 WHERE Id = $post_id; ";
                 $send_query = mysqli_query($connection, $view_query);
                 confirmQuery($send_query);
 
-                $query = "SELECT * FROM posts WHERE Id = $post_id; ";
+                $query = "SELECT * 
+                          FROM posts
+                          LEFT JOIN users u on posts.User_Id = u.Id 
+                          WHERE posts.Id = $post_id; ";
+
                 $select_all_categories_query = mysqli_query($connection, $query);
                 confirmQuery($send_query);
 
                 while($row = mysqli_fetch_assoc($select_all_categories_query)) {
-                    $post_id = $row['Id'];
                     $post_title = $row['Title'];
-                    $post_author = $row['User_Id'];
+                    $post_user = $row['User_Id'];
                     $post_date = $row['Date'];
                     $post_image = $row['Image'];
                     $post_tags = $row['Tags'];
                     $post_content = $row['Content'];
                     $post_views = $row['View_Count'];
+
+                    $user_username = $row['username'];
 
             ?>
 
@@ -49,9 +53,20 @@
                 <h2>
                     <a href="post.php?p_id=<?php echo $post_id; ?>"><?php echo $post_title; ?></a>
                 </h2>
-                <p class="lead">
-                    by <a href="author_post.php?author=<?php echo $post_author; ?>&p_id=<?php echo $post_id; ?>"><?php echo $post_author; ?></a>
-                </p>
+                    <?php
+
+                    if(!empty($user_username)) {
+                        ?>
+
+                        <p class="lead">
+                            by <a href="author_post.php?author=<?php echo $post_user; ?>&p_id=<?php echo $post_id; ?>"><?php echo $post_user; ?></a>
+                        </p>
+
+                        <?php
+                    }
+
+                    ?>
+
                 <p><span class="glyphicon glyphicon-time"></span> <?php echo $post_date; ?></p>
                 <hr>
                 <img class="img-responsive" src="images/<?php echo $post_image; ?>" alt="">
@@ -81,11 +96,6 @@
                     $query_insert_comment = mysqli_query($connection, $query);
 
                     confirmQuery($query_insert_comment);
-
-
-//                    $query = "UPDATE posts SET Comment_Count = Comment_Count + 1 WHERE Id = $post_id";
-//                    $update_comment_count = mysqli_query($connection, $query);
-//                    confirmQuery($update_comment_count);
                 } else {
                     echo "<script>alert('Fields cannot be empty')</script>";
                 }

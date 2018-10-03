@@ -219,7 +219,10 @@ function GetCommentsAndOutputRow($post_id = null) {
     global $connection;
 
     if($post_id != null) {
-        $query = "SELECT * FROM comments WHERE Post_Id = $post_id ORDER BY Id DESC; ";
+        $query = "SELECT * 
+                  FROM comments
+                  INNER JOIN posts ON comments.Post_Id = posts.Id
+                  WHERE Post_Id = $post_id ORDER BY comments.Id DESC; ";
     } else {
         $query = "SELECT * FROM comments ORDER BY Id DESC; ";
     }

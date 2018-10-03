@@ -34,19 +34,25 @@
 
                     $pageCount = ceil($pageCount / $per_page);
 
-                    $query = "SELECT * FROM posts WHERE Status = 'published' ORDER BY Id DESC LIMIT $page_1, $per_page;";
+                    // inner join between psot and user
+                    $query = "SELECT posts.Id as postId, users.Id as userId, posts.Title, posts.Date, posts.Image, posts.Content, posts.Status, users.username 
+                              FROM posts
+                              LEFT JOIN users ON posts.User_Id = users.Id 
+                              WHERE Status = 'published' ORDER BY posts.Id DESC LIMIT $page_1, $per_page;";
                     $select_al_published_categories_query = mysqli_query($connection, $query);
 
                     if(mysqli_num_rows($select_al_published_categories_query) > 0) {
 
                         while($row = mysqli_fetch_assoc($select_al_published_categories_query)) {
-                            $post_id = $row['Id'];
+                            $post_id = $row['postId'];
                             $post_title = $row['Title'];
-                            $post_author = $row['Author'];
+                            $post_user = $row['userId'];
                             $post_date = $row['Date'];
                             $post_image = $row['Image'];
                             $post_content = substr($row['Content'], 0, 50);
                             $post_status = $row['Status'];
+
+                            $user_username = $row['username'];
 
 
 
@@ -62,9 +68,19 @@
                 <h2>
                     <a href="post.php?p_id=<?php echo $post_id; ?>"><?php echo $post_title; ?></a>
                 </h2>
-                <p class="lead">
-                    by <a href="author_post.php?author=<?php echo $post_author; ?>&p_id=<?php echo $post_id; ?>"><?php echo $post_author; ?></a>
-                </p>
+                <?php
+
+                if(!empty($user_username)) {
+                    ?>
+
+                    <p class="lead">
+                        by <a href="author_post.php?author=<?php echo $post_user; ?>"><?php echo $user_username; ?></a>
+                    </p>
+
+                    <?php
+                }
+
+                ?>
                 <p><span class="glyphicon glyphicon-time"></span> <?php echo $post_date; ?></p>
                 <hr>
                         <a href="post.php?p_id=<?php echo $post_id; ?>">

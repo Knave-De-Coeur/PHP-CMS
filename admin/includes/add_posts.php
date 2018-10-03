@@ -57,7 +57,7 @@ if(isset($_POST['create_post'])) {
         confirmQuery($querySelectAllCategories);
         ?>
 
-        <select name="post_user" id="post-category-select">
+        <select name="post_category_id" id="post-category-select">
 
             <?php
 
