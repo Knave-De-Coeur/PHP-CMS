@@ -86,7 +86,7 @@ function UpdateCategory($categoryId) {
     global $connection;
 
     if(isset($_POST['update_category'])) {
-        $titleToUpdate = $_POST['cat_title'];
+        $titleToUpdate = escape($_POST['cat_title']);
         $query = "UPDATE categories SET Title = '{$titleToUpdate}' WHERE Id = {$categoryId}; ";
 
         $queryUpdateCategory = mysqli_query($connection, $query);

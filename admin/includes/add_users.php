@@ -6,12 +6,12 @@
  * Time: 12:57
  */
 if(isset($_POST['create_user'])) {
-    $user_username     = addslashes($_POST['username']);
+    $user_username     = escape($_POST['username']);
     $user_firstname    = $_POST['first_name'];
     $user_lastname     = addslashes($_POST['last_name']);
-    $user_role       = $_POST['user_role'];
-    $user_email       = $_POST['email'];
-    $user_password       = $_POST['password'];
+    $user_role         = $_POST['user_role'];
+    $user_email        = $_POST['email'];
+    $user_password     = $_POST['password'];
 
     $user_image        = $_FILES['user_image']['name'];
     $user_image_temp   = $_FILES['user_image']['tmp_name'];
