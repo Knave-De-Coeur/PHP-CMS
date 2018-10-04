@@ -29,21 +29,6 @@ function checkStatus($table, $column, $value) {
     return mysqli_num_rows($select_with_column_value);
 }
 
-function isAdmin($username = '') {
-    global $connection;
-
-    $query = "SELECT Role FROM users WHERE username = '$username'; ";
-    $result = mysqli_query($connection, $query);
-    confirmQuery($result);
-
-    $row = mysqli_fetch_array($result);
-
-    if($row['Role'] == 'admin') {
-        return true;
-    } else {
-        return false;
-    }
-}
 
 
 
@@ -51,19 +36,27 @@ function isAdmin($username = '') {
 function InsertCategory() {
 
     global $connection;
+
     if(isset($_POST['submit'])) {
         $catTitle = addslashes($_POST['cat_title']);
-        if($catTitle == "" || empty($catTitle)) {
+
+        if ($catTitle == "" || empty($catTitle)) {
+
             echo "This field should not be empty";
+
         } else {
-            $query = "INSERT INTO categories(Title) VALUES ('$catTitle') ";
 
+            $stmt = mysqli_prepare($connection, "INSERT INTO categories(Title) VALUES (?) ");
 
-            $createCategoryQuery = mysqli_query($connection, $query);
+            mysqli_stmt_bind_param($stmt, "s", $catTitle);
 
-            if(!$createCategoryQuery) {
+            mysqli_stmt_execute($stmt);
+
+            if (!$stmt) {
                 die("Query Failed " . mysqli_error($connection));
             }
+
+            mysqli_stmt_close($stmt);
         }
     }
 }
@@ -125,14 +118,20 @@ function UpdateCategory($categoryId) {
 
     if(isset($_POST['update_category'])) {
         $titleToUpdate = escape($_POST['cat_title']);
-        $query = "UPDATE categories SET Title = '{$titleToUpdate}' WHERE Id = {$categoryId}; ";
 
-        $queryUpdateCategory = mysqli_query($connection, $query);
+        $stmt = mysqli_prepare($connection, "UPDATE categories SET Title = ? WHERE Id = ?; ");
 
-        if (!$queryUpdateCategory) {
+        mysqli_stmt_bind_param($stmt, 'si', $titleToUpdate, $categoryId);
+
+        mysqli_stmt_execute($stmt);
+
+        if (!$stmt) {
             die('Query Failed ' . mysqli_error($connection));
         }
 
+        mysqli_stmt_close($stmt);
+
+        redirect('categories.php');
 
     }
 }

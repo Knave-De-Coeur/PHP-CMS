@@ -87,3 +87,20 @@ function loginUser($username, $password) {
 function redirect($location) {
     return header("Location: " . $location);
 }
+
+
+function isAdmin($username = '') {
+    global $connection;
+
+    $query = "SELECT Role FROM users WHERE username = '$username'; ";
+    $result = mysqli_query($connection, $query);
+    confirmQuery($result);
+
+    $row = mysqli_fetch_array($result);
+
+    if($row['Role'] == 'admin') {
+        return true;
+    } else {
+        return false;
+    }
+}
