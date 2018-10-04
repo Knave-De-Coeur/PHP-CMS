@@ -70,7 +70,7 @@
                             ?>
 
                             <p class="lead">
-                                by <a href="author_post.php?author=<?php echo $post_user; ?>&p_id=<?php echo $post_id; ?>"><?php echo $post_user; ?></a>
+                                by <a href="author_post.php?author=<?php echo $post_user; ?>"><?php echo $user_username ?></a>
                             </p>
 
                             <?php

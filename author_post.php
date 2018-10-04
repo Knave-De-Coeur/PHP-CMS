@@ -19,11 +19,17 @@
             if(isset($_GET['author'])) {
                 $post_id = $_GET['author'];
 
-                // inner join
-                $query = "SELECT posts.Id as postId, posts.Title, posts.Date, posts.Image, posts.Content, posts.Status, users.username 
+                if(isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
+                    $query = "SELECT posts.Id as postId, posts.Title, posts.Date, posts.Image, posts.Content, posts.Status, users.username 
+                          FROM posts
+                          INNER JOIN users ON posts.User_Id = users.Id
+                           ORDER BY posts.Id DESC; ";
+                } else {
+                    $query = "SELECT posts.Id as postId, posts.Title, posts.Date, posts.Image, posts.Content, posts.Status, users.username 
                           FROM posts
                           INNER JOIN users ON posts.User_Id = users.Id 
                           WHERE Status = 'published' ORDER BY posts.Id DESC; ";
+                }
 
                 $select_all_categories_query = mysqli_query($connection, $query);
 

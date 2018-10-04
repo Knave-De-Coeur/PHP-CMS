@@ -8,6 +8,7 @@
 
 include "classes/Comment.php";
 include "classes/Post.php";
+//include "classes/Category.php";
 include "delete_modal.php";
 
 if(isset($_GET['delete'])) {
@@ -60,7 +61,7 @@ if(isset($_POST['checkBoxArray'])) {
 
                 while ($row = mysqli_fetch_array($select_post_query)) {
                     $post_title = addslashes($row['Title']);
-                    $post_author = addslashes($row['Author']);
+                    $post_user = $row['User_Id'];
                     $post_category_id = $row['Post_Category_Id'];
                     $post_date = $row['Date'];
                     $post_image = $row['Image'];
@@ -69,8 +70,8 @@ if(isset($_POST['checkBoxArray'])) {
                     $post_status = $row['Status'];
                 }
 
-                $query = "INSERT INTO posts (Post_Category_Id, Title, Author, Date, Image, Content, Tags, Status) 
-                VALUES ({$post_category_id}, '{$post_title}', '{$post_author}', now(), '{$post_image}', '{$post_content}', '{$post_tags}', '{$post_status}'); ";
+                $query = "INSERT INTO posts (Post_Category_Id, Title, User_Id, Date, Image, Content, Tags, Status) 
+                VALUES ({$post_category_id}, '{$post_title}', '{$post_user}', now(), '{$post_image}', '{$post_content}', '{$post_tags}', '{$post_status}'); ";
 
 
                 $clone_post_query = mysqli_query($connection, $query);

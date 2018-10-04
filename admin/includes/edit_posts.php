@@ -34,7 +34,6 @@ if(isset($_POST['update_post'])) {
     $post_title         = addslashes($_POST['title']);
     $post_category_id   = $_POST['post_category_id'];
     $post_user          = $_POST['post_user'];
-    $post_author        = addslashes($_POST['author']);
     $post_status        = $_POST['post_status'];
 
     $post_image         = $_FILES['image']['name'];
@@ -115,7 +114,7 @@ if(isset($_POST['update_post'])) {
     </div>
 
     <div class="form-group">
-        <label for="users">Users: </label>
+        <label for="post_user">Users: </label>
         <br>
         <?php
 

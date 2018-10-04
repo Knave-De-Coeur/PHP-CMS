@@ -6,7 +6,28 @@
  * Time: 18:35
  */
 
+// generic functions
 
+function recordCount($table) {
+    global $connection;
+
+    $query = "SELECT * FROM " . $table;
+    $select_all_records = mysqli_query($connection, $query);
+    confirmQuery($select_all_records);
+
+    $comment_count = mysqli_num_rows($select_all_records);
+
+    return $comment_count;
+}
+
+function checkStatus($table, $column, $value) {
+    global $connection;
+    $query = "SELECT * FROM $table WHERE $column = '{$value}'; ";
+    $select_with_column_value = mysqli_query($connection, $query);
+    confirmQuery($select_with_column_value);
+
+    return mysqli_num_rows($select_with_column_value);
+}
 
 
 // category functions
@@ -103,7 +124,12 @@ function UpdateCategory($categoryId) {
 
 function GetAllPostsAndOutputRow() {
     global $connection;
-    $query = "SELECT * FROM posts ORDER BY Id DESC; ";
+//    $query = "SELECT * FROM posts ORDER BY Id DESC; ";
+    $query = "SELECT posts.Id as postID, posts.User_Id, posts.Post_Category_Id, posts.Title, posts.Tags, posts.Status, 
+                     posts.Date, posts.Image, posts.View_Count, posts.Comment_Count, c.Id as catId, c.Title as catTitle
+              FROM posts
+              LEFT JOIN categories c on posts.Post_Category_Id = c.Id
+              ORDER BY postID DESC; ";
     $queryAllPosts = mysqli_query($connection, $query);
 
     while($row = mysqli_fetch_assoc($queryAllPosts)){
@@ -111,41 +137,29 @@ function GetAllPostsAndOutputRow() {
         $post = new Post();
 
 
-        $post->setId($row['Id']);
+        $post->setId($row['postID']);
         $post->setTitle(stripslashes($row['Title']));
-        $post->setAuthor(stripslashes($row['Author']));
-        if(isset($row['User_Id'])) {
-            $post->user = getPostUser($row['User_Id']);
-        }
-        $post->setPostCategoryID(FindCategoryByPostId($row['Post_Category_Id']));
+        $post->setUser(getPostUser($row['User_Id']));
+        $post->setCategory(new Category($row['catId'], $row['catTitle']));
         $post->setDate($row['Date']);
         $post->setImage($row['Image']);
         $post->setTags($row['Tags']);
         $post->setStatus($row['Status']);
         $post->setViewCount($row['View_Count']);
-        $post->setComments(getCommentsByPostId($row['Id']));
+        $post->setComments(getCommentsByPostId($row['postID']));
 
         echo "<tr>";
         echo "<td><input class='checkboxes' type='checkbox' name='checkBoxArray[]' value='$post->Id'/></td>";
         echo "<td>$post->Id</td>";
-
-        if(!empty($post->author)) {
-            echo "<td>$post->author</td>";
-        } else if ($post->user->username != "N/A") {
-            echo "<td>{$post->user->username}</td>";
-        } else {
-            echo "<td>N/A</td>";
-        }
-
+        echo "<td>{$post->getUser()->getUsername()}</td>";
         echo "<td>$post->title</td>";
-        echo "<td>$post->postCategoryId</td>";
+        echo "<td>{$post->getCategory()->getTitle()}</td>";
         echo "<td>$post->status</td>";
         echo "<td><img style='width: 100px;' src='../images/$post->image ' /></td>";
         echo "<td>$post->tags</td>";
         echo "<td><a href='post_comments.php?id=$post->Id'>". count($post->getComments()) . "</a></td>";
         echo "<td>$post->date</td>";
         echo "<td><a href='../post.php?p_id=$post->Id'>View Post</a></td>";
-//        echo "<td><a onclick=\"javascript: return confirm('Are you sure you want to delete?');\" href='posts.php?delete=$post->Id'>Delete</a><br /></td>";
         echo "<td><a rel='$post->Id' class='delete_link' href='javascript:void(0)'>Delete</a><br /></td>";
         echo "<td><a href='posts.php?source=edit_post&p_id=$post->Id'>Edit</a></td>";
         echo "<td><a href='posts.php?reset_views=$post->Id'>$post->viewCount</a> </td>";
@@ -154,16 +168,13 @@ function GetAllPostsAndOutputRow() {
 }
 
 function getPostUser($user_Id) {
-
-    global $connection;
-    $query = "SELECT * FROM users WHERE Id = $user_Id; ";
-    $query_users = mysqli_query($connection, $query);
-    confirmQuery($query_users);
-
     $author = new User();
 
-
-    if(mysqli_num_rows($query_users) > 0) {
+    if(!empty($user_Id)) {
+        global $connection;
+        $query = "SELECT * FROM users WHERE Id = $user_Id; ";
+        $query_users = mysqli_query($connection, $query);
+        confirmQuery($query_users);
         while ($row = mysqli_fetch_assoc($query_users)) {
 
             $author->setId($row['Id']);

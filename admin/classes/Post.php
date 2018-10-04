@@ -8,13 +8,13 @@
 
 require_once("BaseCmsRecord.php");
 require_once("User.php");
+require_once("Category.php");
 
 class Post extends BaseCmsRecord
 {
-    public $postCategoryId;
     public $title;
     public $author;
-    public $user;
+    protected $user;
     public $date;
     public $image;
     public $content;
@@ -22,6 +22,7 @@ class Post extends BaseCmsRecord
     public $comments;
     public $status;
     public $viewCount;
+    protected $category;
 
     /**
      * Post constructor.
@@ -32,21 +33,14 @@ class Post extends BaseCmsRecord
         $this->user = new User();
     }
 
-
-    /**
-     * @return mixed
-     */
-    public function getPostCategoryId()
+    public function setCategory(Category $category)
     {
-        return $this->postCategoryId;
+        $this->category = $category;
     }
 
-    /**
-     * @param mixed $postCategoryID
-     */
-    public function setPostCategoryId($postCategoryId)
+    public function getCategory()
     {
-        $this->postCategoryId = $postCategoryId;
+        return $this->category;
     }
 
     /**
@@ -97,7 +91,7 @@ class Post extends BaseCmsRecord
     /**
      * @param mixed $user
      */
-    public function setUser($user)
+    public function setUser(User $user)
     {
         $this->user = $user;
     }
