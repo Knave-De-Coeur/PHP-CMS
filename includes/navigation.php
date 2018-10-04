@@ -39,7 +39,7 @@
 
                     $contact_class = "";
 
-                    $pageName = basename($_SERVER['PHP_SELF']);
+                    $pageName = basename($_SERVER['SCRIPT_NAME']);
 
                     $registration = 'registration.php';
                     $contact = 'contact.php';
@@ -67,7 +67,7 @@
                     }
                     if(isset($_GET['p_id'])) {
                         $post_Id = $_GET['p_id'];
-                            echo "<li><a href='admin/posts.php?source=edit_post&p_id=$post_Id'>Edit Post</a></li>";
+                        echo "<li><a href='admin/posts.php?source=edit_post&p_id=$post_Id'>Edit Post</a></li>";
                     }
                 }
 

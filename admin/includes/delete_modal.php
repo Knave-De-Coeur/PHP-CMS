@@ -22,7 +22,8 @@
                 <h2>Are you sure you want to delete this post?</h2>
             </div>
             <div class="modal-footer">
-                <a href="" class="btn btn-danger modal_delete_link">Delete</a>
+                <input type="hidden" class="modal_delete_link" value="" name="delete_id">
+                <input type="submit" class="btn btn-danger" value="Delete" name="delete">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
             </div>
         </div>

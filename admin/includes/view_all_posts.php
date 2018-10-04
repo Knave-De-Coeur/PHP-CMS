@@ -9,10 +9,9 @@
 include "classes/Comment.php";
 include "classes/Post.php";
 //include "classes/Category.php";
-include "delete_modal.php";
 
-if(isset($_GET['delete'])) {
-    $post_id = $_GET['delete'];
+if(isset($_POST['delete'])) {
+    $post_id = $_POST['delete_id'];
     $query = "DELETE FROM posts WHERE Id = " . $post_id;
 
     $query_delete_post = mysqli_query($connection, $query);
@@ -93,9 +92,7 @@ if(isset($_POST['checkBoxArray'])) {
         $(".delete_link").click(function () {
            var id = $(this).attr("rel");
 
-           var delete_url = "posts.php?delete=" + id + "";
-
-           $(".modal_delete_link").attr("href", delete_url);
+           $(".modal_delete_link").attr("value", id);
 
            $("#myModal").modal('show');
         });
@@ -104,6 +101,7 @@ if(isset($_POST['checkBoxArray'])) {
 
 <form action="" method="post">
 
+    <?php include "delete_modal.php"; ?>
 
 
     <table class="table table-bordered table-hover" >

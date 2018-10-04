@@ -29,6 +29,23 @@ function checkStatus($table, $column, $value) {
     return mysqli_num_rows($select_with_column_value);
 }
 
+function isAdmin($username = '') {
+    global $connection;
+
+    $query = "SELECT Role FROM users WHERE username = '$username'; ";
+    $result = mysqli_query($connection, $query);
+    confirmQuery($result);
+
+    $row = mysqli_fetch_array($result);
+
+    if($row['Role'] == 'admin') {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
 
 // category functions
 function InsertCategory() {
@@ -159,9 +176,11 @@ function GetAllPostsAndOutputRow() {
         echo "<td>$post->tags</td>";
         echo "<td><a href='post_comments.php?id=$post->Id'>". count($post->getComments()) . "</a></td>";
         echo "<td>$post->date</td>";
-        echo "<td><a href='../post.php?p_id=$post->Id'>View Post</a></td>";
-        echo "<td><a rel='$post->Id' class='delete_link' href='javascript:void(0)'>Delete</a><br /></td>";
-        echo "<td><a href='posts.php?source=edit_post&p_id=$post->Id'>Edit</a></td>";
+        echo "<td><a class='btn btn-primary' href='../post.php?p_id=$post->Id'>View Post</a></td>";
+        echo "<input type='hidden' name='post_id' value='$post->Id' />";
+//        echo "<td><input class='btn btn-danger' type='submit' name='delete' value='delete' /></td>";
+        echo "<td><a class='btn btn-danger delete_link' rel='$post->Id'href='javascript:void(0)'>Delete</a><br /></td>";
+        echo "<td><a class='btn btn-info' href='posts.php?source=edit_post&p_id=$post->Id'>Edit</a></td>";
         echo "<td><a href='posts.php?reset_views=$post->Id'>$post->viewCount</a> </td>";
         echo "</tr>";
     }

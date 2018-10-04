@@ -17,3 +17,73 @@ function confirmQuery($queryResult) {
         die("Query failed: " . mysqli_error($connection));
     }
 }
+
+function accountExists($column, $value) {
+    global $connection;
+    $query = "SELECT * FROM users WHERE $column = '$value'";
+    $result = mysqli_query($connection, $query);
+    confirmQuery($result);
+
+    if(mysqli_num_rows($result) > 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function registerUser($username, $email, $password) {
+    global $connection;
+
+
+    $username = mysqli_real_escape_string($connection, $username);
+    $email = mysqli_real_escape_string($connection, $email);
+    $password = mysqli_real_escape_string($connection, $password);
+
+    $password = password_hash($password, PASSWORD_BCRYPT, array('cost' => 12));
+
+    $query = "INSERT INTO users (username, email, password, role) VALUES ('$username', '$email', '$password', 'subscriber'); ";
+    $insert_new_registered_user = mysqli_query($connection, $query);
+    confirmQuery($insert_new_registered_user);
+
+}
+
+function loginUser($username, $password) {
+    global $connection;
+
+    $username = trim($username);
+    $password = trim($password);
+
+    $username = mysqli_real_escape_string($connection, $username);
+    $password = mysqli_real_escape_string($connection, $password);
+
+    $query = "SELECT * FROM users WHERE username='$username';";
+
+    $query_user_by_username = mysqli_query($connection, $query);
+
+    confirmQuery($query_user_by_username);
+
+
+    while($row = mysqli_fetch_assoc($query_user_by_username)) {
+        $db_user_username = $row['username'];
+        $db_user_password = $row['password'];
+        $db_user_firstname = $row['firstname'];
+        $db_user_lastname = $row['lastname'];
+        $db_user_role = $row['role'];
+
+    }
+
+    if(password_verify($password, $db_user_password)) {
+        $_SESSION['username'] = $db_user_username;
+        $_SESSION['firstname'] = $db_user_firstname;
+        $_SESSION['lastname'] = $db_user_lastname;
+        $_SESSION['role'] = $db_user_role;
+
+        redirect('/php-cms/admin/index.php');
+    } else {
+        redirect('index.php');
+    }
+}
+
+function redirect($location) {
+    return header("Location: " . $location);
+}

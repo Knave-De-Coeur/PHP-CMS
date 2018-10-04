@@ -1,5 +1,5 @@
 <?php  include "includes/db_connection.php"; ?>
- <?php  include "includes/header.php"; ?>
+<?php  include "includes/header.php"; ?>
 
 
     <!-- Navigation -->
@@ -8,35 +8,53 @@
 
 <?php
 
-    if(isset($_POST['submit'])) {
-        $username = $_POST['username'];
-        $email = $_POST['email'];
-        $password = $_POST['password'];
+    if($_SERVER['REQUEST_METHOD'] == "POST") {
+//        registerUser();
+        $username = trim($_POST['username']);
+        $email = trim($_POST['email']);
+        $password = trim($_POST['password']);
 
-        if(!empty($username) && !empty($password) && !empty($email)) {
-            $username = mysqli_real_escape_string($connection, $username);
-            $email = mysqli_real_escape_string($connection,$email);
-            $password = mysqli_real_escape_string($connection, $password);
+        $error = [
+            'username' => '',
+            'email' => '',
+            'password' => ''
+        ];
 
-            $password = password_hash($password, PASSWORD_BCRYPT, array('cost' => 12) );
+        if(strlen($username) <= 4) {
+            $error['username'] = 'Username needs to be longer';
+        }
+        if(empty($username)) {
+            $error['username'] = 'Username cannot be empty';
+        }
+
+        if(accountExists('username', $username)) {
+            $error['username'] = 'Username already exists, pick another';
+        }
+
+        if(empty($email)) {
+            $error['email'] = 'Email cannot be empty';
+        }
+
+        if(accountExists('email', $email)) {
+            $error['email'] = 'Email already exists, <a href="index.php">Log in</a>';
+        }
+
+        if($password == '') {
+            $error['password'] = 'Password cannot be empty!';
+        }
 
 
+        foreach ($error as $key => $value) {
+            if(empty($value)) {
+                unset($error[$key]);
+            }
+        } // foreach
 
-            $query = "INSERT INTO users (username, email, password, role) VALUES ('$username', '$email', '$password', 'subscriber'); ";
-            $insert_new_registered_user = mysqli_query($connection, $query);
-            confirmQuery($insert_new_registered_user);
-
-            $message = "Your Registration has been submitted";
-
-//            header("Location: index.php");
-
-
-        } else {
-            $message = "Fields cannot be empty.";
+        if(empty($error)) {
+            registerUser($username, $email, $password);
+            loginUser($username, $password);
         }
     }
-
-
 
 ?>
     
@@ -53,25 +71,27 @@
                     <form role="form" action="registration.php" method="post" id="login-form" autocomplete="off">
                     <?php
 
-                        if(isset($message)) {
-                            echo "<h6 class='text-center'>$message</h6>";
-                        }
 
                     ?>
                         <div class="form-group">
                             <label for="username" class="sr-only">username</label>
-                            <input type="text" name="username" id="username" class="form-control" placeholder="Enter Desired Username">
+                            <input type="text" name="username" id="username" class="form-control"
+                                   placeholder="Enter Desired Username" autocomplete="on" value="<?php echo isset($username) ? $username : ''; ?>">
+                            <p><?php echo isset($error['username']) ? $error['username'] : ''?></p>
                         </div>
                          <div class="form-group">
                             <label for="email" class="sr-only">Email</label>
-                            <input type="email" name="email" id="email" class="form-control" placeholder="somebody@example.com">
+                            <input type="email" name="email" id="email" class="form-control"
+                                   placeholder="somebody@example.com" autocomplete="on" value="<?php echo isset($email) ? $email : '' ?>">
+                             <p><?php echo isset($error['email']) ? $error['email'] : ''?></p>
                         </div>
                          <div class="form-group">
                             <label for="password" class="sr-only">Password</label>
                             <input type="password" name="password" id="key" class="form-control" placeholder="Password">
-                        </div>
+                             <p><?php echo isset($error['password']) ? $error['password'] : ''?></p>
+                         </div>
                 
-                        <input type="submit" name="submit" id="btn-login" class="btn btn-custom btn-lg btn-block" value="Register">
+                        <input type="submit" name="register" id="btn-login" class="btn btn-custom btn-lg btn-block" value="Register">
                     </form>
                  
                 </div>
