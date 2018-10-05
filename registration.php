@@ -1,6 +1,29 @@
 <?php  include "includes/db_connection.php"; ?>
 <?php  include "includes/header.php"; ?>
 
+<?php
+
+require __DIR__ . '/vendor/autoload.php';
+
+$dotenv = new \Dotenv\Dotenv(__DIR__);
+$dotenv->load();
+
+$options = array(
+  'cluster' => 'eu'
+);
+
+try {
+
+    $pusher = new \Pusher\Pusher(getenv('APP_KEY'), getenv('APP_SECRET'), getenv('APP_ID'), $options);
+
+} catch (\Pusher\PusherException $e) {
+
+    echo "trying to get pusher ";
+
+}
+
+?>
+
 
     <!-- Navigation -->
     
@@ -51,8 +74,28 @@
         } // foreach
 
         if(empty($error)) {
+
             registerUser($username, $email, $password);
-            loginUser($username, $password);
+
+
+            try {
+
+//                $data['message'] = $username;
+
+
+                $pusher->trigger('notifications', 'new_user', $username);
+
+                loginUser($username, $password);
+
+                redirect('index.php');
+
+            } catch (\Pusher\PusherException $e) {
+
+                echo "problem";
+
+            }
+
+
         }
     }
 
@@ -68,7 +111,7 @@
             <div class="col-xs-6 col-xs-offset-3">
                 <div class="form-wrap">
                 <h1>Register</h1>
-                    <form role="form" action="registration.php" method="post" id="login-form" autocomplete="off">
+                    <form role="form" action="" method="post" id="registration-form" autocomplete="off">
                     <?php
 
 
