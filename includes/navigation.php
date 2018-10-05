@@ -43,6 +43,7 @@
 
                     $registration = 'registration.php';
                     $contact = 'contact.php';
+                    $login = 'login.php';
 
                     if(isset($_GET['category']) && $_GET['category'] == $cat_id) {
                         $category_class = 'active';
@@ -57,18 +58,24 @@
 
                 ?>
 
+                <?php if(isLoggedIn()): ?>
+
+                    <li><a href='admin/index.php'>Admin</a></li>
+
+                <?php else: ?>
+
+                    <li><a href='login.php'>Login</a></li>
+                    <li><a href='includes/logout.php'>Logout</a></li>
+
+
+                <?php endif; ?>
 
 
                 <?php
 
-                if(isset($_SESSION['role'])) {
-                    if($_SESSION['role'] === 'admin') {
-                        echo "<li><a href='admin/index.php'>Admin</a></li>";
-                    }
-                    if(isset($_GET['p_id'])) {
-                        $post_Id = $_GET['p_id'];
-                        echo "<li><a href='admin/posts.php?source=edit_post&p_id=$post_Id'>Edit Post</a></li>";
-                    }
+                if(isset($_GET['p_id'])) {
+                    $post_Id = $_GET['p_id'];
+                    echo "<li><a href='admin/posts.php?source=edit_post&p_id=$post_Id'>Edit Post</a></li>";
                 }
 
                 echo "<li class='$registration_class'><a href='registration.php'>Register</a></li>";

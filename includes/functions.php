@@ -85,9 +85,38 @@ function loginUser($username, $password) {
 }
 
 function redirect($location) {
-    return header("Location: " . $location);
+    header("Location: " . $location);
+    exit;
 }
 
+function ifItIsMethod($method=null) {
+
+    if($_SERVER['REQUEST_METHOD'] == strtoupper($method)) {
+        return true;
+    }
+
+    return false;
+
+}
+
+function isLoggedIn() {
+
+    if(isset($_SESSION['role'])) {
+        return true;
+    }
+
+    return false;
+
+}
+
+
+function checkIfUserIsLoggedInAndRedirect($redirectLocation=null) {
+
+    if(isLoggedIn()) {
+        redirect($redirectLocation);
+    }
+
+}
 
 function isAdmin($username = '') {
     global $connection;
