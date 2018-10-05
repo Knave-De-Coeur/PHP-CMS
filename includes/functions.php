@@ -135,3 +135,13 @@ function isAdmin($username = '') {
         return false;
     }
 }
+
+// images
+
+function imagePlaceholder($image = '') {
+    if(!$image || empty($image)) {
+        return 'image_1.jpg';
+    } else {
+        return $image;
+    }
+}

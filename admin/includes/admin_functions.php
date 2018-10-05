@@ -140,12 +140,25 @@ function UpdateCategory($categoryId) {
 
 function GetAllPostsAndOutputRow() {
     global $connection;
-//    $query = "SELECT * FROM posts ORDER BY Id DESC; ";
-    $query = "SELECT posts.Id as postID, posts.User_Id, posts.Post_Category_Id, posts.Title, posts.Tags, posts.Status, 
+
+    if($_SESSION['username']) {
+
+        $currentUser = getPostUserByUsername($_SESSION['username']);
+
+        $query = "SELECT posts.Id as postID, posts.User_Id, posts.Post_Category_Id, posts.Title, posts.Tags, posts.Status, 
+                     posts.Date, posts.Image, posts.View_Count, posts.Comment_Count, c.Id as catId, c.Title as catTitle
+              FROM posts
+              LEFT JOIN categories c on posts.Post_Category_Id = c.Id
+              WHERE posts.User_Id = {$currentUser->getId()}
+              ORDER BY postID DESC; ";
+    } else {
+        $query = "SELECT posts.Id as postID, posts.User_Id, posts.Post_Category_Id, posts.Title, posts.Tags, posts.Status, 
                      posts.Date, posts.Image, posts.View_Count, posts.Comment_Count, c.Id as catId, c.Title as catTitle
               FROM posts
               LEFT JOIN categories c on posts.Post_Category_Id = c.Id
               ORDER BY postID DESC; ";
+    }
+
     $queryAllPosts = mysqli_query($connection, $query);
 
     while($row = mysqli_fetch_assoc($queryAllPosts)){
@@ -155,7 +168,7 @@ function GetAllPostsAndOutputRow() {
 
         $post->setId($row['postID']);
         $post->setTitle(stripslashes($row['Title']));
-        $post->setUser(getPostUser($row['User_Id']));
+        $post->setUser(getPostUserById($row['User_Id']));
         $post->setCategory(new Category($row['catId'], $row['catTitle']));
         $post->setDate($row['Date']);
         $post->setImage($row['Image']);
@@ -185,12 +198,33 @@ function GetAllPostsAndOutputRow() {
     }
 }
 
-function getPostUser($user_Id) {
+function getPostUserById($user_Id) {
     $author = new User();
 
     if(!empty($user_Id)) {
         global $connection;
         $query = "SELECT * FROM users WHERE Id = $user_Id; ";
+        $query_users = mysqli_query($connection, $query);
+        confirmQuery($query_users);
+        while ($row = mysqli_fetch_assoc($query_users)) {
+
+            $author->setId($row['Id']);
+            $author->setFirstName($row['firstname']);
+            $author->setLastName($row['lastname']);
+            $author->setUsername($row['username']);
+        }
+    } else {
+        $author->setUsername("N/A");
+    }
+    return $author;
+}
+
+function getPostUserByUsername($username) {
+    $author = new User();
+
+    if(!empty($username)) {
+        global $connection;
+        $query = "SELECT * FROM users WHERE username = '$username' ; ";
         $query_users = mysqli_query($connection, $query);
         confirmQuery($query_users);
         while ($row = mysqli_fetch_assoc($query_users)) {
@@ -368,3 +402,4 @@ function usersOnline() {
 }
 
 usersOnline();
+
