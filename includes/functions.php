@@ -18,6 +18,29 @@ function confirmQuery($queryResult) {
     }
 }
 
+function redirect($location) {
+    header("Location: " . $location);
+    exit;
+}
+
+function query($query) {
+
+    global $connection;
+
+    return mysqli_query($connection, $query);
+}
+
+function ifItIsMethod($method=null) {
+
+    if($_SERVER['REQUEST_METHOD'] == strtoupper($method)) {
+        return true;
+    }
+
+    return false;
+
+}
+
+// users and login
 function accountExists($column, $value) {
     global $connection;
     $query = "SELECT * FROM users WHERE $column = '$value'";
@@ -86,20 +109,7 @@ function loginUser($username, $password) {
     return false;
 }
 
-function redirect($location) {
-    header("Location: " . $location);
-    exit;
-}
 
-function ifItIsMethod($method=null) {
-
-    if($_SERVER['REQUEST_METHOD'] == strtoupper($method)) {
-        return true;
-    }
-
-    return false;
-
-}
 
 function isLoggedIn() {
 
@@ -109,6 +119,21 @@ function isLoggedIn() {
 
     return false;
 
+}
+
+function loggedInUserId() {
+
+    if(isLoggedIn()) {
+
+       $result = query("SELECT * FROM users WHERE username ='" . $_SESSION['username'] ."'");
+       $user = mysqli_fetch_assoc($result);
+
+       $something = mysqli_num_rows($result) >= 1 ? $user['Id'] : false;
+
+        return $something;
+    }
+
+    return false;
 }
 
 
@@ -136,6 +161,25 @@ function isAdmin($username = '') {
     }
 }
 
+// likes
+
+function userLikedThisPost($post_id = 0) {
+
+    $result = query("SELECT * FROM likes WHERE User_Id=" . loggedInUserId() . " AND Post_Id={$post_id}");
+
+    return mysqli_num_rows($result) >= 1 ? true : false;
+
+}
+
+function getPostLikes($post_id) {
+
+    $result = query("SELECT * FROM likes WHERE Post_Id = {$post_id}");
+    confirmQuery($result);
+
+    return mysqli_num_rows($result);
+
+}
+
 // images
 
 function imagePlaceholder($image = '') {
@@ -145,3 +189,4 @@ function imagePlaceholder($image = '') {
         return $image;
     }
 }
+

@@ -1,9 +1,6 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: knave-de-coeur
- * Date: 02/10/18
- * Time: 16:51
- */
+<?php include "includes/db_connection.php"; ?>
+<?php include "includes/header.php"; ?>
 
-echo password_hash('secret', PASSWORD_BCRYPT, array('cost' => 12) );
+<?php
+
+echo loggedInUserId();
