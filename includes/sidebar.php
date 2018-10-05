@@ -7,20 +7,7 @@
  */
 ?>
 
-<?php
 
-if(ifItIsMethod('post')) {
-
-    if(isset($_POST['username']) && isset($_POST['password'])) {
-        if(loginUser($_POST['username'], $_POST['password'])) {
-            redirect('admin');
-        }
-    }
-
-    redirect('index');
-}
-
-?>
 
 <div class="col-md-4">
 

@@ -2,6 +2,21 @@
 
 <?php include "includes/header.php"; ?>
 
+<?php
+
+if(ifItIsMethod('post')) {
+
+    if(isset($_POST['username']) && isset($_POST['password'])) {
+        if(loginUser($_POST['username'], $_POST['password'])) {
+            redirect('admin/');
+        }
+    }
+
+    redirect('index.php');
+}
+
+?>
+
     <!-- Navigation -->
 <?php include "includes/navigation.php"; ?>
 

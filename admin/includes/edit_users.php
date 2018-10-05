@@ -60,7 +60,7 @@ if(isset($_GET['u_id'])) {
 
             confirmQuery($update_user_query);
 
-            echo "<p class='bg-success'>User Updated! <a href='users.php'>Edit Other Posts</a></p>";
+            echo "<p class='bg-success'>User Updated! <a href='users.php'>Edit Other Users</a></p>";
         } else {
             echo "<p class='bg-warning'>Pasword Cannot be empty!</p>";
         }

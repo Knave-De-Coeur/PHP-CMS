@@ -12,7 +12,7 @@ if(ifItIsMethod('post')) {
     } else {
         redirect('login.php');
     }
-
+    redirect('admin');
 }
 
 

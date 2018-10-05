@@ -61,11 +61,12 @@
                 <?php if(isLoggedIn()): ?>
 
                     <li><a href='admin/index.php'>Admin</a></li>
+                    <li><a href='includes/logout.php'>Logout</a></li>
+
 
                 <?php else: ?>
 
                     <li><a href='login.php'>Login</a></li>
-                    <li><a href='includes/logout.php'>Logout</a></li>
 
 
                 <?php endif; ?>

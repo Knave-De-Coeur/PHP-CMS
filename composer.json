@@ -3,6 +3,11 @@
     "require-dev": {
         "phpmailer/phpmailer": "^6.0"
     },
+    "autoload": {
+        "classmap": [
+            "classes"
+        ]
+    },
     "authors": [
         {
             "name": "Alexander James",
