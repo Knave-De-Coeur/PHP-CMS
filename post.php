@@ -5,6 +5,31 @@
     <!-- Navigation -->
 <?php include "includes/navigation.php"; ?>
 
+<?php
+
+if(isset($_POST['liked'])) {
+
+    $postID = $_POST['liked'];
+
+    // select post
+    $query = "SELECT * FROM posts WHERE Id = $postID; ";
+    $result = mysqli_query($connection, $query);
+
+    $post == mysqli_fetch_array($result);
+
+    $likes = $post['likes'];
+
+    if(mysqli_num_rows($post) >=1 ) {
+        echo $post['Id'];
+    }
+
+    // update post with likes
+
+    // put data in our likes (insert row)
+}
+
+?>
+
     <!-- Page Content -->
     <div class="container">
 
@@ -85,6 +110,16 @@
                         <p><?php echo $post_content; ?></p>
 
                         <hr>
+
+                        <div class="row">
+                            <p class="pull-right"><a class="like" href="#"><span class="glyphicon glyphicon-thumbs-up" style="font-size: 20px;"></span> &nbsp; Like</a></p>
+                        </div>
+
+                        <div class="row">
+                            <p class="pull-right">Like: 10</p>
+                        </div>
+
+                        <div class="clearfix"></div>
 
                         <?php
                     }
@@ -188,3 +223,34 @@
     <hr>
 
 <?php include "includes/footer.php"; ?>
+
+        <script>
+
+            $(document).ready(function () {
+
+                var post_id = <?php echo $post_id; ?>;
+
+                var user_id = 1;
+
+               $(".like").click(function (event) {
+                   event.preventDefault();
+                  console.log("Liked");
+
+                   $.ajax({
+                       url: "post.php?p_Id=<?php echo $post_id; ?>",
+                       type: 'post',
+                       data: {
+                           'liked': 1,
+                           'post_id': post_id,
+                           'user_id': user_id
+                       },
+                       success: function (result) {
+                           $(".like").html("This is working!");
+                       }
+                   });
+
+               });
+
+            });
+
+        </script>
