@@ -62,26 +62,28 @@ function loginUser($username, $password) {
 
     confirmQuery($query_user_by_username);
 
+    if(mysqli_num_rows($query_user_by_username) > 0) {
+        while ($row = mysqli_fetch_assoc($query_user_by_username)) {
+            $db_user_username = $row['username'];
+            $db_user_password = $row['password'];
+            $db_user_firstname = $row['firstname'];
+            $db_user_lastname = $row['lastname'];
+            $db_user_role = $row['role'];
 
-    while($row = mysqli_fetch_assoc($query_user_by_username)) {
-        $db_user_username = $row['username'];
-        $db_user_password = $row['password'];
-        $db_user_firstname = $row['firstname'];
-        $db_user_lastname = $row['lastname'];
-        $db_user_role = $row['role'];
+        }
 
+        if (password_verify($password, $db_user_password)) {
+            $_SESSION['username'] = $db_user_username;
+            $_SESSION['firstname'] = $db_user_firstname;
+            $_SESSION['lastname'] = $db_user_lastname;
+            $_SESSION['role'] = $db_user_role;
+
+            return true;
+        }
     }
 
-    if(password_verify($password, $db_user_password)) {
-        $_SESSION['username'] = $db_user_username;
-        $_SESSION['firstname'] = $db_user_firstname;
-        $_SESSION['lastname'] = $db_user_lastname;
-        $_SESSION['role'] = $db_user_role;
-
-        redirect('/php-cms/admin/index.php');
-    } else {
-        redirect('index.php');
-    }
+    // if we make it here there's a problem
+    return false;
 }
 
 function redirect($location) {

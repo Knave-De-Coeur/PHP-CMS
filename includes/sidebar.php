@@ -6,6 +6,22 @@
  * Time: 15:05
  */
 ?>
+
+<?php
+
+if(ifItIsMethod('post')) {
+
+    if(isset($_POST['username']) && isset($_POST['password'])) {
+        if(loginUser($_POST['username'], $_POST['password'])) {
+            redirect('admin');
+        }
+    }
+
+    redirect('index');
+}
+
+?>
+
 <div class="col-md-4">
 
     <!-- Blog Search Well -->
@@ -20,6 +36,7 @@
                 </button>
             </span>
         </div>
+
         </form><!-- search form -->
         <!-- /.input-group -->
     </div>
@@ -36,7 +53,7 @@
         } else {
             ?>
             <h4>Login</h4>
-            <form action="includes/login.php" method="post">
+            <form  method="post">
                 <div class="form-group">
                     <input type="text" name="username" class="form-control" placeholder="Enter Username">
                 </div>
@@ -47,6 +64,9 @@
 
                     </button>
                 </span>
+                </div>
+                <div class="form-group">
+                    <a href="forgot.php?forgot=<?php echo uniqid(true); ?>">Forgot Password?</a>
                 </div>
             </form><!-- login form -->
             <?php
