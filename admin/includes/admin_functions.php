@@ -8,29 +8,33 @@
 
 // generic functions
 
-function recordCount($table) {
-    global $connection;
 
-    $query = "SELECT * FROM " . $table;
-    $select_all_records = mysqli_query($connection, $query);
-    confirmQuery($select_all_records);
+function recordCount($table, $checkUser = false) {
 
-    $comment_count = mysqli_num_rows($select_all_records);
+    if($checkUser) {
+        $userId = loggedInUserId();
+        $query = "SELECT * FROM " . $table . " WHERE User_Id = {$userId}; ";
 
-    return $comment_count;
+    } else {
+        $query = "SELECT * FROM " . $table;
+    }
+
+    $select_all_records = query($query);
+
+    return countRecords($select_all_records);
 }
 
-function checkStatus($table, $column, $value) {
-    global $connection;
-    $query = "SELECT * FROM $table WHERE $column = '{$value}'; ";
-    $select_with_column_value = mysqli_query($connection, $query);
-    confirmQuery($select_with_column_value);
-
-    return mysqli_num_rows($select_with_column_value);
+function getAllPostUserComments() {
+    return query("SELECT * FROM posts INNER JOIN comments c on posts.Id = c.Post_Id WHERE User_Id = " . loggedInUserId());
 }
 
+function getAllPostUserCategories() {
+    return query("SELECT * FROM categories WHERE User_Id = " . loggedInUserId());
+}
 
-
+function getAllPostUserCommentsWithStatus($status) {
+    return query("SELECT * FROM posts INNER JOIN comments c on posts.Id = c.Post_Id WHERE User_Id = " . loggedInUserId() . " AND c.Status = '{$status}'");
+}
 
 // category functions
 function InsertCategory() {
@@ -46,9 +50,9 @@ function InsertCategory() {
 
         } else {
 
-            $stmt = mysqli_prepare($connection, "INSERT INTO categories(Title) VALUES (?) ");
+            $stmt = mysqli_prepare($connection, "INSERT INTO categories(Title, User_Id) VALUES (?, ?) ");
 
-            mysqli_stmt_bind_param($stmt, "s", $catTitle);
+            mysqli_stmt_bind_param($stmt, "si", $catTitle, loggedInUserId() );
 
             mysqli_stmt_execute($stmt);
 

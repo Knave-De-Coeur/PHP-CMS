@@ -6,6 +6,8 @@
  * Time: 13:39
  */
 
+// db helper
+
 function escape($string) {
     global $connection;
     return mysqli_real_escape_string($connection, trim(strip_tags($string)));
@@ -27,7 +29,18 @@ function query($query) {
 
     global $connection;
 
-    return mysqli_query($connection, $query);
+    $result = mysqli_query($connection, $query);
+    confirmQuery($result);
+
+    return $result;
+}
+
+function fetchRecord($result) {
+    return mysqli_fetch_assoc($result);
+}
+
+function countRecords($result) {
+    return mysqli_num_rows($result);
 }
 
 function ifItIsMethod($method=null) {
@@ -41,6 +54,29 @@ function ifItIsMethod($method=null) {
 }
 
 // users and login
+
+function isAdmin() {
+
+    global $connection;
+
+    if(isLoggedIn()) {
+        $result = query("SELECT Role FROM users WHERE Id = '{$_SESSION['user_Id']}'");
+
+        $row = fetchRecord($result);
+
+        if($row['Role'] == 'admin') {
+            return true;
+        }
+    }
+
+    return false;
+
+}
+
+function getUsername() {
+    return isset($_SESSION['username']) ?  $_SESSION['username'] : null;
+}
+
 function accountExists($column, $value) {
     global $connection;
     $query = "SELECT * FROM users WHERE $column = '$value'";
@@ -87,6 +123,7 @@ function loginUser($username, $password) {
 
     if(mysqli_num_rows($query_user_by_username) > 0) {
         while ($row = mysqli_fetch_assoc($query_user_by_username)) {
+            $db_user_id = $row['Id'];
             $db_user_username = $row['username'];
             $db_user_password = $row['password'];
             $db_user_firstname = $row['firstname'];
@@ -96,6 +133,7 @@ function loginUser($username, $password) {
         }
 
         if (password_verify($password, $db_user_password)) {
+            $_SESSION['user_Id'] = $db_user_id;
             $_SESSION['username'] = $db_user_username;
             $_SESSION['firstname'] = $db_user_firstname;
             $_SESSION['lastname'] = $db_user_lastname;
@@ -137,6 +175,23 @@ function loggedInUserId() {
 }
 
 
+function checkStatus($table, $column, $value, $checkUser = false) {
+
+    global $connection;
+
+    if($checkUser) {
+        $query = "SELECT * FROM $table WHERE $column = '{$value}' AND User_Id = " . loggedInUserId() . " ; ";
+    } else {
+        $query = "SELECT * FROM $table WHERE $column = '{$value}'; ";
+    }
+
+    $select_with_column_value = mysqli_query($connection, $query);
+    confirmQuery($select_with_column_value);
+
+    return mysqli_num_rows($select_with_column_value);
+}
+
+
 function checkIfUserIsLoggedInAndRedirect($redirectLocation=null) {
 
     if(isLoggedIn()) {
@@ -145,21 +200,7 @@ function checkIfUserIsLoggedInAndRedirect($redirectLocation=null) {
 
 }
 
-function isAdmin($username = '') {
-    global $connection;
 
-    $query = "SELECT Role FROM users WHERE username = '$username'; ";
-    $result = mysqli_query($connection, $query);
-    confirmQuery($result);
-
-    $row = mysqli_fetch_array($result);
-
-    if($row['Role'] == 'admin') {
-        return true;
-    } else {
-        return false;
-    }
-}
 
 // likes
 

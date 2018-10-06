@@ -1,25 +1,11 @@
 <?php include "includes/admin_header.php"; ?>
 
     <div id="wrapper">
+
+
+
         <!-- Navigation -->
         <?php include "includes/admin_navigation.php"; ?>
-
-        <?php
-
-
-
-        $user_post_published_count = checkStatus('posts', 'status', 'published', true);
-
-
-        $user_post_draft_count = checkStatus('posts', 'status', 'draft', true);
-
-
-        $user_unapproved_comment_count = countRecords(getAllPostUserCommentsWithStatus('unapproved'));
-
-
-        $user_approved_comment_count = countRecords(getAllPostUserCommentsWithStatus('approved'));
-
-        ?>
 
         <div id="page-wrapper">
 
@@ -30,8 +16,8 @@
                     <div class="col-lg-12">
                         <h1 class="page-header">
                             <small>Role: <?php echo $_SESSION['role']; ?></small>
-                            Welcome to Admin!
-                            <?php echo strtoupper(getUsername()); ?>
+                            Welcome to the Admin Dashboard!
+                            <small><?php echo getUsername(); ?></small>
                         </h1>
                     </div>
                 </div>
@@ -49,7 +35,7 @@
                                         <i class="fa fa-file-text fa-5x"></i>
                                     </div>
                                     <div class="col-xs-9 text-right">
-                                        <div class='huge'><?php echo $post_count = recordCount('posts', true); ?></div>
+                                        <div class='huge'><?php echo $post_count = recordCount('posts'); ?></div>
                                         <div>Posts</div>
                                     </div>
                                 </div>
@@ -71,12 +57,34 @@
                                         <i class="fa fa-comments fa-5x"></i>
                                     </div>
                                     <div class="col-xs-9 text-right">
-                                        <div class='huge'><?php echo $comment_count = countRecords(getAllPostUserComments()); ?></div>
+                                        <div class='huge'><?php echo $comment_count = recordCount('comments'); ?></div>
                                         <div>Comments</div>
                                     </div>
                                 </div>
                             </div>
                             <a href="comments.php">
+                                <div class="panel-footer">
+                                    <span class="pull-left">View Details</span>
+                                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="panel panel-yellow">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <i class="fa fa-user fa-5x"></i>
+                                    </div>
+                                    <div class="col-xs-9 text-right">
+                                        <div class='huge'><?php echo $user_count = recordCount('users'); ?></div>
+                                        <div> Users</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="users.php">
                                 <div class="panel-footer">
                                     <span class="pull-left">View Details</span>
                                     <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -93,7 +101,7 @@
                                         <i class="fa fa-list fa-5x"></i>
                                     </div>
                                     <div class="col-xs-9 text-right">
-                                        <div class='huge'><?php echo $cat_count = countRecords(getAllPostUserCategories()); ?></div>
+                                        <div class='huge'><?php echo $cat_count = recordCount("categories"); ?></div>
                                         <div>Categories</div>
                                     </div>
                                 </div>
@@ -111,7 +119,22 @@
                 <!-- /.row -->
 
 
+                <?php
 
+
+
+                $post_published_count = checkStatus('posts', 'status', 'published');
+
+
+                $post_draft_count = checkStatus('posts', 'status', 'draft');
+
+
+                $unapproved_comment_count = checkStatus('comments', 'status', 'unapproved');
+
+
+                $sub_count = checkStatus('users', 'role', 'subscriber');
+
+                ?>
 
                 <div class="row">
 
@@ -128,8 +151,8 @@
 
                                 <?php
 
-                                $element_text = ['All Posts', 'Active Posts', 'Draft Posts', 'Active Comments', 'Pending Comments', 'Categories'];
-                                $element_count = [$post_count, $user_post_published_count, $user_post_draft_count, $user_approved_comment_count, $user_unapproved_comment_count, $cat_count];
+                                $element_text = ['All Posts', 'Active Posts', 'Draft Posts', 'Comments', 'Pending Comments', 'User', 'Subscribers','Categories'];
+                                $element_count = [$post_count, $post_published_count, $post_draft_count, $comment_count, $unapproved_comment_count, $user_count, $sub_count, $cat_count];
 
                                 for ($i = 0; $i < count($element_text); $i++) {
                                     echo "['$element_text[$i]'" . "," . $element_count[$i] . "],";
